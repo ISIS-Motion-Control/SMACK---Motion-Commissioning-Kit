@@ -12,6 +12,7 @@ using System.Linq;
 using System.Diagnostics;
 using Nito.AsyncEx.Synchronous;
 using System.Windows;
+using TwinCat_Motion_ADS.Properties;
 
 namespace TwinCat_Motion_ADS.MeasurementDevice
 {
@@ -51,9 +52,17 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
                 reader = new StreamReader(RenishawServer);
                 writer = new StreamWriter(RenishawServer);
                 
-                string exeName = "Renishaw_XL80_App.exe";
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, exeName);
-                MessageBox.Show(path);
+                //string exeName = "Renishaw_XL80_App.exe";
+                //string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, exeName);
+                string path = Properties.Settings.Default.XL80exe;
+                Console.WriteLine(path);
+                if (string.IsNullOrEmpty(path))
+                {
+                    Console.WriteLine("No path defined in settings");
+                }
+                
+                //Need to add the path to the XL80 tool (and maybe others in the future) as a separate setting string that user can define
+                
                 RenishawClient = Process.Start(path);
                 CancellationTokenSource ct = new();
                 RenishawServer.WaitForConnectionAsync(ct.Token);
