@@ -1,10 +1,7 @@
 ﻿using System.IO.Ports;
 using System.Threading;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System;
 
 namespace TwinCat_Motion_ADS.MeasurementDevice
