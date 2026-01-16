@@ -109,17 +109,14 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
             var txBuf = new byte[] { 0x47, 0x4D, 0x2C, 0x30, 0x2C, 0x31, 0x2C, 0x30, 0x30, 0x30, 0x0D };
 
             //Take the ToolNumber for the current channel being measured
-            string toolID = ChToolNumber[measurementChannel-1];
+            string toolID = ChToolNumber[measurementChannel-1].PadLeft(3, '0');
             txBuf[7] = (byte)toolID[0];
             txBuf[8] = (byte)toolID[1];
             txBuf[9] = (byte)toolID[2];
 
+            IsValidToolNumberWithErrorMessage(measurementChannel);
 
-            //Check tool ID is what you expect
-            /*for (int i = 0; i < txBuf.Length; i++)
-            {
-                Console.WriteLine($"Byte {i}: 0x{txBuf[i]:X2}");
-            }*/ 
+
 
             //create a buffer to hold the returned value
             var rxBuf = new byte[15];
@@ -165,6 +162,21 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
                 ct.Cancel();
                 return System.Array.Empty<byte>(); //if timeout return empty array
             }
+        }
+
+        public bool IsValidToolNumberWithErrorMessage(int currentChannel)
+        {
+            int.TryParse(ChToolNumber[currentChannel - 1], out var toolNumber);
+            if (200 <= toolNumber && toolNumber <= 299)
+            {
+                return true;
+            }
+            else
+            {
+                Console.WriteLine($"Invalid tool number for channel {currentChannel}, must be between 200 and 299");
+                return false;
+            }
+
         }
     }
 
