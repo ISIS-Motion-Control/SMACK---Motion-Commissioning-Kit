@@ -480,6 +480,7 @@ namespace TwinCat_Motion_ADS
             string cbpp = "ChConnected[" + (channel - 1) + "]";
             string tbContent;
             string tnpp = "ChToolNumber[" + (channel - 1) + "]";
+            string tnContent;
             //Don't want to reset name field unless it's empty
             if (string.IsNullOrEmpty(((MD_KeyenceTMX5000)source).ChName[channel - 1]))
             {
@@ -490,13 +491,22 @@ namespace TwinCat_Motion_ADS
                 tbContent = ((MD_KeyenceTMX5000)source).ChName[channel - 1];
             }
 
+            if (string.IsNullOrEmpty(((MD_KeyenceTMX5000)source).ChToolNumber[channel - 1]))
+            {
+                tnContent = "Tool";
+            }
+            else
+            {
+                tnContent = ((MD_KeyenceTMX5000)source).ChToolNumber[channel - 1];
+            }
+
             //Bind and setup UI elements
-            
+
             XamlUI.TextboxBinding(tb, source, tbpp);
             XamlUI.SetupTextBox(ref tb, tbContent, 100);
             XamlUI.CheckBoxBinding(cbContent, cb, source, cbpp);
             XamlUI.TextboxBinding(tn, source, tnpp);
-            XamlUI.SetupTextBox(ref tn, "tool", 30);
+            XamlUI.SetupTextBox(ref tn, tnContent, 30);
             tb.Margin = new Thickness(5, 0, 0, 0);
             tn.Margin = new Thickness(5, 0, 5, 0);
 

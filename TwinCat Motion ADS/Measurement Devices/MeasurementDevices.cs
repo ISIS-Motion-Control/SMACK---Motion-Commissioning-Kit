@@ -165,6 +165,7 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
                         //Baud Rate
                         ((BaseRs232MeasurementDevice)(MeasurementDeviceList[deviceCounter])).UpdateBaudRate(device.SelectSingleNode("BaudRate").InnerText);
                         break;
+
                     case DeviceTypes.KeyenceTM3000:
                         Console.WriteLine("Importing KeyenceTm3000");
                         //Comm port
@@ -195,6 +196,40 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
                             i++;
                         }
                         break;
+
+                    case DeviceTypes.KeyenceTMX5000:
+                        Console.WriteLine("Importing KeyenceTMX5000");
+                        //Comm port
+                        ((BaseRs232MeasurementDevice)(MeasurementDeviceList[deviceCounter])).PortName = device.SelectSingleNode("Port").InnerText;
+                        //Baud Rate
+                        ((BaseRs232MeasurementDevice)(MeasurementDeviceList[deviceCounter])).UpdateBaudRate(device.SelectSingleNode("BaudRate").InnerText);
+
+                        //Not to setup channel names and connections
+                        XmlNodeList chSettings2 = device.SelectNodes("Channel");
+                        Console.WriteLine("Keyence channels : " + chSettings2.Count);
+
+                        int j = 0; //channel counter
+                        foreach (XmlNode ch in chSettings2)
+                        {
+                            if (j >= ((MD_KeyenceTMX5000)(MeasurementDeviceList[deviceCounter])).KEYENCE_MAX_CHANNELS)
+                            {
+                                break;
+                            }
+                            ((MD_KeyenceTMX5000)(MeasurementDeviceList[deviceCounter])).ChName[j] = ch.SelectSingleNode("Name").InnerText;
+                            ((MD_KeyenceTMX5000)(MeasurementDeviceList[deviceCounter])).ChToolNumber[j] = ch.SelectSingleNode("ToolID").InnerText;
+                            if (ch.SelectSingleNode("Connected").InnerText == "True")
+                            {
+                                ((MD_KeyenceTMX5000)(MeasurementDeviceList[deviceCounter])).ChConnected[j] = true;
+                            }
+                            else
+                            {
+                                ((MD_KeyenceTMX5000)(MeasurementDeviceList[deviceCounter])).ChConnected[j] = false;
+                            }
+
+                            j++;
+                        }
+                        break;
+
                     case DeviceTypes.Beckhoff:
                         Console.WriteLine("Importing Beckhoff");
                         //AMS Net ID
@@ -238,6 +273,7 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
                             chCounter++;
                         }
                         break;
+
                     case DeviceTypes.MotionChannel:
                         Console.WriteLine("Importing Motion Channel");
                         ((MD_MotionControllerChannel)(MeasurementDeviceList[deviceCounter])).VariableType = device.SelectSingleNode("VariableType").InnerText;
@@ -309,6 +345,31 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
                             channelConnection.InnerText = ((MD_KeyenceTM3000)(md)).ChConnected[i].ToString();
                             channelNode.AppendChild(channelName);
                             channelNode.AppendChild(channelConnection);
+                            deviceNode.AppendChild(channelNode);
+                        }
+                        break;
+
+                    case DeviceTypes.KeyenceTMX5000:
+                        commNode = xmlDoc.CreateElement("Port");
+                        commNode.InnerText = ((MD_KeyenceTMX5000)(md)).PortName;
+                        baudNode = xmlDoc.CreateElement("BaudRate");
+                        baudNode.InnerText = ((MD_KeyenceTMX5000)(md)).BaudRate;
+                        deviceNode.AppendChild(commNode);
+                        deviceNode.AppendChild(baudNode);
+
+                        for (int i = 0; i < ((MD_KeyenceTMX5000)(md)).KEYENCE_MAX_CHANNELS; i++)
+                        {
+                            XmlNode channelNode = xmlDoc.CreateElement("Channel");
+                            XmlNode channelName = xmlDoc.CreateElement("Name");
+                            XmlNode channelConnection = xmlDoc.CreateElement("Connected");
+                            XmlNode channelToolID = xmlDoc.CreateElement("ToolID");
+
+                            channelName.InnerText = ((MD_KeyenceTMX5000)(md)).ChName[i];
+                            channelConnection.InnerText = ((MD_KeyenceTMX5000)(md)).ChConnected[i].ToString();
+                            channelToolID.InnerText = ((MD_KeyenceTMX5000)(md)).ChToolNumber[i];
+                            channelNode.AppendChild(channelName);
+                            channelNode.AppendChild(channelConnection);
+                            channelNode.AppendChild(channelToolID);
                             deviceNode.AppendChild(channelNode);
                         }
                         break;
