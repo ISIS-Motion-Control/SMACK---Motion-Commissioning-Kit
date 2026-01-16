@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style  TargetType="Button" x:Key="myDefaultButton">
         <Setter Property="Background" Value="#999999"/>
+        
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="FontFamily" Value="Yu Gothic UI"/>
         <Setter Property="Foreground" Value="White"/>
@@ -16,7 +17,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" CornerRadius="4" Background="{TemplateBinding Background}">
+                    <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" CornerRadius="2" Background="{TemplateBinding Background}">
                         <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
                     </Border>
@@ -25,7 +26,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#787878"/>
+                <Setter Property="Background" Value="#FFC8C7C7"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="0.5"/>
