@@ -923,19 +923,16 @@ namespace TwinCat_Motion_ADS
 
 
         /* 
-         *       _________    _______       ________       _________    ________      
-                |\___   ___\ |\  ___ \     |\   ____\     |\___   ___\ |\   ____\     
-                \|___ \  \_| \ \   __/|    \ \  \___|_    \|___ \  \_| \ \  \___|_    
-                     \ \  \   \ \  \_|/__   \ \_____  \        \ \  \   \ \_____  \   
-                      \ \  \   \ \  \_|\ \   \|____|\  \        \ \  \   \|____|\  \  
-                       \ \__\   \ \_______\    ____\_\  \        \ \__\    ____\_\  \ 
-                        \|__|    \|_______|   |\_________\        \|__|   |\_________\
-                                              \|_________|                \|_________|
-                                                                     */
+                             ______   ______     ______     ______   ______    
+                            /\__  _\ /\  ___\   /\  ___\   /\__  _\ /\  ___\   
+                            \/_/\ \/ \ \  __\   \ \___  \  \/_/\ \/ \ \___  \  
+                               \ \_\  \ \_____\  \/\_____\    \ \_\  \/\_____\ 
+                                \/_/   \/_____/   \/_____/     \/_/   \/_____/ 
+                                                                                                 */
 
 
 
-            public async Task<bool> LimitToLimitTestwithReversingSequence(NcTestSettings testSettings, MeasurementDevices devices = null)
+        public async Task<bool> LimitToLimitTestwithReversingSequence(NcTestSettings testSettings, MeasurementDevices devices = null)
         {
             //check there is a valid plc connection
             if (!ValidCommand()) return false;
