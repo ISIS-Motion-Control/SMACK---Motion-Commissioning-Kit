@@ -297,6 +297,14 @@ namespace TwinCat_Motion_ADS
                         Console.WriteLine("Test did not complete");
                     }
                     break;
+                case TestTypes.HomeTest:
+                    if (await testAxis.HomingRepeatabilityTest(NcTestSettings, windowData.MeasurementDevices))
+                    { }
+                    else
+                    {
+                        Console.WriteLine("Test did not complete");
+                    }
+                    break;
                 default:
                     break;
             }
@@ -416,6 +424,23 @@ namespace TwinCat_Motion_ADS
                     SettingStepSize.IsEnabled = true;
                     SettingSettlingTime.IsEnabled = true;
                     SettingReversalDistance.IsEnabled = true;
+                    SettingOvershootDistance.IsEnabled = false;
+                    break;
+                case TestTypes.HomeTest:
+                    SettingTitle.IsEnabled = true;
+                    SettingCycles.IsEnabled = true;
+                    SettingCycleDelay.IsEnabled = true;
+                    SettingVelocity.IsEnabled = true;
+                    SettingTimeout.IsEnabled = true;
+                    SettingReversalVelocity.IsEnabled = false;
+                    SettingReversalExtraSeconds.IsEnabled = false;
+                    SettingReversalSettlingSeconds.IsEnabled = false;
+                    SettingInitialSetpoint.IsEnabled = true;
+                    SettingEndSetpoint.IsEnabled = false;
+                    SettingAccuracySteps.IsEnabled = false;
+                    SettingStepSize.IsEnabled = false;
+                    SettingSettlingTime.IsEnabled = true;
+                    SettingReversalDistance.IsEnabled = false;
                     SettingOvershootDistance.IsEnabled = false;
                     break;
                 case TestTypes.NoneSelected:
