@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Windows;
 using TwinCat_Motion_ADS.MeasurementDevice;
 using System.Net;
+using System.Windows.Forms;
 
 namespace TwinCat_Motion_ADS
 {
@@ -923,19 +924,16 @@ namespace TwinCat_Motion_ADS
 
 
         /* 
-         *       _________    _______       ________       _________    ________      
-                |\___   ___\ |\  ___ \     |\   ____\     |\___   ___\ |\   ____\     
-                \|___ \  \_| \ \   __/|    \ \  \___|_    \|___ \  \_| \ \  \___|_    
-                     \ \  \   \ \  \_|/__   \ \_____  \        \ \  \   \ \_____  \   
-                      \ \  \   \ \  \_|\ \   \|____|\  \        \ \  \   \|____|\  \  
-                       \ \__\   \ \_______\    ____\_\  \        \ \__\    ____\_\  \ 
-                        \|__|    \|_______|   |\_________\        \|__|   |\_________\
-                                              \|_________|                \|_________|
-                                                                     */
+                             ______   ______     ______     ______   ______    
+                            /\__  _\ /\  ___\   /\  ___\   /\__  _\ /\  ___\   
+                            \/_/\ \/ \ \  __\   \ \___  \  \/_/\ \/ \ \___  \  
+                               \ \_\  \ \_____\  \/\_____\    \ \_\  \/\_____\ 
+                                \/_/   \/_____/   \/_____/     \/_/   \/_____/ 
+                                                                                                 */
 
 
 
-            public async Task<bool> LimitToLimitTestwithReversingSequence(NcTestSettings testSettings, MeasurementDevices devices = null)
+        public async Task<bool> LimitToLimitTestwithReversingSequence(NcTestSettings testSettings, MeasurementDevices devices = null)
         {
             //check there is a valid plc connection
             if (!ValidCommand()) return false;
@@ -1486,8 +1484,92 @@ namespace TwinCat_Motion_ADS
 
         public async Task<bool> HomingRepeatabilityTest(NcTestSettings testSettings, MeasurementDevices devices = null)
         {
+            //check there is a valid plc connection
+            if (!ValidCommand()) return false;
+            //check that the current parameters are valid
+            if (!SanityCheckSettings(testSettings, TestTypes.HomeTest)) return false;
+            //Update the progress scaler values based on current test and settings
+            ResetAndCalculateProgressScalers(testSettings, TestTypes.HomeTest);
+            testSettings.TestType.Val = TestTypes.HomeTest;
+            //Check for pause or cancellation request
+            await PauseTask(CancellationToken.None);
+            if (IsTestCancelled()) return false;
 
-            return false;
+            //Setup test CSV and setting files
+            string settingFileFullPath = GenerateSettingsPath(testSettings);
+            string csvFileFullPath = GenerateCSVPath(testSettings);
+            SaveSettingsFile(testSettings, settingFileFullPath);
+            StartCSV(csvFileFullPath, devices);
+
+            //Set the test is running flag
+            testRunning = true;
+
+            //Start stopwatch for time of test
+            Stopwatch stopWatch = new();
+            stopWatch.Start();  //Clear and start the stopwatch
+
+            double targetPosition = testSettings.EndSetpoint.Val;
+
+
+            //Test Cycles
+            for (uint cycleCount = 1; cycleCount <= testSettings.Cycles.Val; cycleCount++)
+            {
+                //Check for pause or cancellation request
+                await PauseTask(CancellationToken.None);
+                if (IsTestCancelled())
+                {
+                    testRunning = false;
+                    return false;
+                }
+
+                //Update time estimate
+                EstimatedTimeRemaining.TimeEstimateUpdate(cycleCount, testSettings.Cycles.Val);
+
+                //Print current cycle to console
+                Console.WriteLine("Cycle " + cycleCount);
+
+
+                //Move to home
+                if (await HomeAxisAndWait((int)testSettings.Timeout.Val) == false)
+                {
+                    Console.WriteLine("Failed to move to home");
+                    testRunning = false;
+                    stopWatch.Stop();
+                    SendHttpRequest(testSettings.TestTitle.Val, "Test failed");
+                    return false;
+                }
+
+                //delay
+                await Task.Delay(TimeSpan.FromSeconds(testSettings.SettleTimeSeconds.Val));
+
+
+                //Move to measurement point
+                if (await UniDirectionalSingleCycle(testSettings, cycleCount, targetPosition, devices, csvFileFullPath, 0, true) == false)
+                {
+                    testRunning = false;
+                    stopWatch.Stop();
+                    SendHttpRequest(testSettings.TestTitle.Val, "Test failed");
+                    return false;
+                }
+
+                //Delay between cycles
+                await Task.Delay(TimeSpan.FromSeconds(testSettings.CycleDelaySeconds.Val)); //inter-cycle delay wait
+                if (cycleCount == 1)
+                {
+                    SendHttpRequest(testSettings.TestTitle.Val, "First cycle complete");
+                }
+                else
+                {
+                    SendHttpRequest(testSettings.TestTitle.Val, "Cycle " + cycleCount + " complete\n \nEstimated finish at " + EstimatedTimeRemaining.EstimatedEndTime.ToString());
+                }
+            }
+            TestProgress = 1;
+            testRunning = false;
+            stopWatch.Stop();
+            Console.WriteLine("Test Complete. Test took " + stopWatch.Elapsed);
+            SendHttpRequest(testSettings.TestTitle.Val, "Test complete");
+            return true;
+            
         }
 
 
@@ -1575,6 +1657,7 @@ namespace TwinCat_Motion_ADS
 
         public void SendHttpRequest(string Id, string Status)
         {
+            return;
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(flowURL);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
@@ -1641,7 +1724,10 @@ namespace TwinCat_Motion_ADS
                         Console.WriteLine("Step size is invalid");
                         checkValid = false;
                     }
-                    break;                
+                    break;
+                case TestTypes.HomeTest:
+                    break;
+
             }
 
             return checkValid;
@@ -1664,6 +1750,9 @@ namespace TwinCat_Motion_ADS
                 case TestTypes.BidirectionalAccuracy:
                 case TestTypes.ScalingTest:
                     stepScaler = progScaler / ((Convert.ToDouble(ts.NumberOfSteps.Val) + 1) * 2);
+                    break;
+                case TestTypes.HomeTest:
+                    stepScaler = progScaler;
                     break;
             }
         }
@@ -1754,7 +1843,7 @@ namespace TwinCat_Motion_ADS
                         return false;
                     }
                     retryCounter += 1;
-                    MessageBox.Show("File not accesible. Press OK to retry.\n"+ (4-retryCounter) + " attempt(s) remaining.");
+                    System.Windows.MessageBox.Show("File not accesible. Press OK to retry.\n"+ (4-retryCounter) + " attempt(s) remaining.");
 
                 }
             }

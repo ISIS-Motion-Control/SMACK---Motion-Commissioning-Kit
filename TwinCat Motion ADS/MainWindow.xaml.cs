@@ -12,7 +12,7 @@ using TwinCat_Motion_ADS.MeasurementDevice;
 
 namespace TwinCat_Motion_ADS
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         #region Properties
         public PLC Plc;
@@ -22,6 +22,7 @@ namespace TwinCat_Motion_ADS
         public NcAxisView NcAxisView;
         public CsvHelperView CsvHelperView;
         public AirAxisView AirAxisView;
+        public SettingsView SettingsView;
         public bool windowClosing = false;
 
         public MeasurementDevices MeasurementDevices = new();
@@ -55,9 +56,9 @@ namespace TwinCat_Motion_ADS
 
             AmsNetID = Properties.Settings.Default.amsNetID;
             SetupBinds();
-            if (!string.IsNullOrEmpty(amsNetIdTb.Text))
+            if (!string.IsNullOrEmpty(AmsNetID))
             {
-                Plc = new PLC(amsNetIdTb.Text, 852); 
+                Plc = new PLC(AmsNetID, 852); 
                 Plc.setupPLC();
                 if (Plc.AdsState == AdsState.Invalid)
                 {
@@ -78,6 +79,7 @@ namespace TwinCat_Motion_ADS
             NcAxisView = new();
             AirAxisView = new();
             CsvHelperView = new();
+            SettingsView = new();
             tabbedWindow.Content = NcAxisView;
            
         }
@@ -281,27 +283,8 @@ namespace TwinCat_Motion_ADS
             amsNetBinding.Path = new PropertyPath("AmsNetID"); ;
             amsNetBinding.Mode = BindingMode.TwoWay;
             amsNetBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            BindingOperations.SetBinding(amsNetIdTb, TextBox.TextProperty, amsNetBinding);
         }
 
-        private void ConnectToPlc_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Connecting to PLC...");
-            Plc = new PLC(amsNetIdTb.Text, 852);
-            Plc.setupPLC();
-            if (Plc.AdsState == AdsState.Invalid)
-            {
-                Console.WriteLine("Ads state is invalid");
-            }
-            else if (Plc.AdsState == AdsState.Stop)
-            {
-                Console.WriteLine("Device connected but PLC not running");
-            }
-            else if (Plc.AdsState == AdsState.Run)
-            {
-                Console.WriteLine("Device connected and running");
-            }
-        }
 
         private void TestSuiteMenu_Click(object sender, RoutedEventArgs e)
         {
@@ -325,6 +308,10 @@ namespace TwinCat_Motion_ADS
             else if(((RadioButton)sender)== CsvHelper)
             {
                 tabbedWindow.Content = CsvHelperView;
+            }
+            else if (((RadioButton)sender) == SettingsScreen)
+            {
+                tabbedWindow.Content = SettingsView;
             }
         }
         

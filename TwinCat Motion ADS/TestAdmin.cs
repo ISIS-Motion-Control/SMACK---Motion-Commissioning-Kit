@@ -269,6 +269,8 @@ namespace TwinCat_Motion_ADS
         public SettingString(string settingName)
         {
             pd = TypeDescriptor.GetProperties(Properties.Settings.Default)[settingName];
+            _val = (string)pd.GetValue(Properties.Settings.Default);
+            _uiVal = (string)pd.GetValue(Properties.Settings.Default);
         }
 
         public string UiVal

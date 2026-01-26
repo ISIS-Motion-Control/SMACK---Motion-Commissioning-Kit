@@ -198,128 +198,6 @@ namespace TwinCat_Motion_ADS
             }
         }
 
-        private async void LimitToLimitTest_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-            if (await testAxis.LimitToLimitTestwithReversingSequence(NcTestSettings, windowData.MeasurementDevices))
-            {
-                Console.WriteLine("Test Complete");
-            }
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-
-        }
-
-        private async void UniDirecitonalTest_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-            if (await testAxis.UniDirectionalAccuracyTest(NcTestSettings, windowData.MeasurementDevices))
-            {}
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-        }
-
-        private async void BiDirecitonalTest_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-
-            if (await testAxis.BiDirectionalAccuracyTest(NcTestSettings, windowData.MeasurementDevices))
-            {          }
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-        }
-
-        private async void ScalingTestButton_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-
-            if (await testAxis.ScalingTest(NcTestSettings, windowData.MeasurementDevices))
-            { }
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-        }
-
-        private async void BacklashTestButton_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-
-            if (await testAxis.BacklashDetectionTest(NcTestSettings, windowData.MeasurementDevices))
-            { }
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-        }
-
-
         private void CancelTest_Click(object sender, RoutedEventArgs e)
         {
             if (testAxis == null)
@@ -413,6 +291,14 @@ namespace TwinCat_Motion_ADS
                     break;
                 case TestTypes.BacklashDetection:
                     if (await testAxis.BacklashDetectionTest(NcTestSettings, windowData.MeasurementDevices))
+                    { }
+                    else
+                    {
+                        Console.WriteLine("Test did not complete");
+                    }
+                    break;
+                case TestTypes.HomeTest:
+                    if (await testAxis.HomingRepeatabilityTest(NcTestSettings, windowData.MeasurementDevices))
                     { }
                     else
                     {
@@ -538,6 +424,23 @@ namespace TwinCat_Motion_ADS
                     SettingStepSize.IsEnabled = true;
                     SettingSettlingTime.IsEnabled = true;
                     SettingReversalDistance.IsEnabled = true;
+                    SettingOvershootDistance.IsEnabled = false;
+                    break;
+                case TestTypes.HomeTest:
+                    SettingTitle.IsEnabled = true;
+                    SettingCycles.IsEnabled = true;
+                    SettingCycleDelay.IsEnabled = true;
+                    SettingVelocity.IsEnabled = true;
+                    SettingTimeout.IsEnabled = true;
+                    SettingReversalVelocity.IsEnabled = false;
+                    SettingReversalExtraSeconds.IsEnabled = false;
+                    SettingReversalSettlingSeconds.IsEnabled = false;
+                    SettingInitialSetpoint.IsEnabled = false;
+                    SettingEndSetpoint.IsEnabled = true;
+                    SettingAccuracySteps.IsEnabled = false;
+                    SettingStepSize.IsEnabled = false;
+                    SettingSettlingTime.IsEnabled = true;
+                    SettingReversalDistance.IsEnabled = false;
                     SettingOvershootDistance.IsEnabled = false;
                     break;
                 case TestTypes.NoneSelected:

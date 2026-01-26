@@ -167,8 +167,8 @@ namespace TwinCat_Motion_ADS
         BacklashDetection,
         [StringValue("UserPrompt")]
         UserPrompt,
-        [StringValue("HomeCommand")]
-        HomeCommand,
+        [StringValue("HomeTest")]
+        HomeTest,
         [StringValue("NoneSelected")]
         NoneSelected
     }
