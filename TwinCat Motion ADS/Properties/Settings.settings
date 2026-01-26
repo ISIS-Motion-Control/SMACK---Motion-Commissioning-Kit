@@ -108,7 +108,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="XL80exe" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Local Docs\AdsApp\Xl80\Application Files\Renishaw_XL80_App_1_0_0_4\Renishaw_XL80_App.exe</Value>
+      <Value Profile="(Default)">C:\Program Files\SMACK_Comissioning_Software\XL80\Renishaw_XL80_App.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

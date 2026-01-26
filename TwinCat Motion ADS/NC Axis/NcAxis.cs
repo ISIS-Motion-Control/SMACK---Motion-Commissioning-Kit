@@ -1653,11 +1653,11 @@ namespace TwinCat_Motion_ADS
             return true;
         }
 
-        private static string flowURL = "https://prod-139.westeurope.logic.azure.com:443/workflows/50481148dc2546839ee6d746c2efed50/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=L7MRywsTPKwyTz9I2nEvM_1rRhNQSCHdbvxs6AYQHxQ";
+        private static string flowURL = "https://default3f66361ca87e41588f6199e82db3ca.c8.environment.api.powerplatform.com/powerautomate/automations/direct/workflows/50481148dc2546839ee6d746c2efed50/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=iWs1FOokJaoYMB1AzQLRTaC3zirZlLuhJqczEc6aA5M";
 
         public void SendHttpRequest(string Id, string Status)
         {
-            return;
+            
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(flowURL);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";

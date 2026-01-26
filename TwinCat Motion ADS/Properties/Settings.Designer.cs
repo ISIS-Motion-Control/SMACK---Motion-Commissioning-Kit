@@ -12,7 +12,7 @@ namespace TwinCat_Motion_ADS.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -445,8 +445,7 @@ namespace TwinCat_Motion_ADS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Local Docs\\AdsApp\\Xl80\\Application Files\\Renishaw_XL80_App_1_0_0_4\\Renishaw_XL" +
-            "80_App.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\SMACK_Comissioning_Software\\XL80\\Renishaw_XL80_App.exe")]
         public string XL80exe {
             get {
                 return ((string)(this["XL80exe"]));
