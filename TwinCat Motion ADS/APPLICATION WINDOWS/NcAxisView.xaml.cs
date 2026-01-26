@@ -435,8 +435,8 @@ namespace TwinCat_Motion_ADS
                     SettingReversalVelocity.IsEnabled = false;
                     SettingReversalExtraSeconds.IsEnabled = false;
                     SettingReversalSettlingSeconds.IsEnabled = false;
-                    SettingInitialSetpoint.IsEnabled = true;
-                    SettingEndSetpoint.IsEnabled = false;
+                    SettingInitialSetpoint.IsEnabled = false;
+                    SettingEndSetpoint.IsEnabled = true;
                     SettingAccuracySteps.IsEnabled = false;
                     SettingStepSize.IsEnabled = false;
                     SettingSettlingTime.IsEnabled = true;

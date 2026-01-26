@@ -1508,7 +1508,7 @@ namespace TwinCat_Motion_ADS
             Stopwatch stopWatch = new();
             stopWatch.Start();  //Clear and start the stopwatch
 
-            double targetPosition = testSettings.InitialSetpoint.Val;
+            double targetPosition = testSettings.EndSetpoint.Val;
 
 
             //Test Cycles
@@ -1543,7 +1543,7 @@ namespace TwinCat_Motion_ADS
                 await Task.Delay(TimeSpan.FromSeconds(testSettings.SettleTimeSeconds.Val));
 
 
-                //Second approach cycle
+                //Move to measurement point
                 if (await UniDirectionalSingleCycle(testSettings, cycleCount, targetPosition, devices, csvFileFullPath, 0, true) == false)
                 {
                     testRunning = false;
