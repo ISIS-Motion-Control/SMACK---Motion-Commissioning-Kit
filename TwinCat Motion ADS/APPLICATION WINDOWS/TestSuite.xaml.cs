@@ -423,6 +423,9 @@ namespace TwinCat_Motion_ADS
                             statusListItems.Add("Failed");
                         }
                         break;
+                    case TestTypes.NoneSelected:
+                        Console.WriteLine("No test selected");
+                        break;
                 }
                 testCounter++;
             }

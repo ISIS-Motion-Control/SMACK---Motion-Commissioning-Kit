@@ -305,6 +305,9 @@ namespace TwinCat_Motion_ADS
                         Console.WriteLine("Test did not complete");
                     }
                     break;
+                case TestTypes.NoneSelected:
+                    Console.WriteLine("No test selected");
+                    break;
                 default:
                     break;
             }
