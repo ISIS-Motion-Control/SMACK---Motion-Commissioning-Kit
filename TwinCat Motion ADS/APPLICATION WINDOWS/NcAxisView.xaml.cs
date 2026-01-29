@@ -24,7 +24,7 @@ namespace TwinCat_Motion_ADS
         public NcAxis testAxis;
         public NcTestSettings NcTestSettings = new();
         public string selectedFolder = string.Empty;
-        
+
         public NcAxisView()
         {
             InitializeComponent();
@@ -35,12 +35,12 @@ namespace TwinCat_Motion_ADS
             //TestSelectionComboBox.ItemsSource = Enum.GetValues(typeof(TestTypes)).Cast<TestTypes>();
             var tmpArray = Enum.GetValues(typeof(TestTypes)).Cast<TestTypes>();
             List<TestTypes> cbSourceList = new();
-            foreach(var tmp in tmpArray)
+            foreach (var tmp in tmpArray)
             {
                 cbSourceList.Add(tmp);
             }
             cbSourceList.Remove(TestTypes.UserPrompt);
-            
+
             //Set source for combobox items
             TestSelectionComboBox.ItemsSource = cbSourceList;
             TestSelectionComboBox.SelectedItem = NcTestSettings.TestType.Val;
@@ -59,7 +59,7 @@ namespace TwinCat_Motion_ADS
             }
             SetupBinds();
         }
-        
+
         public void SetupBinds()
         {
             //Binds all the UI elemets to properties in the NC Axis
@@ -69,43 +69,43 @@ namespace TwinCat_Motion_ADS
             XamlUI.CheckBoxBinding((string)bwEnabledCheck.Content, bwEnabledCheck, testAxis, "AxisBwEnabled", BindingMode.OneWay);
             XamlUI.CheckBoxBinding((string)errorCheck.Content, errorCheck, testAxis, "Error", BindingMode.OneWay);
             XamlUI.CheckBoxBinding((string)validAxis.Content, validAxis, testAxis, "Valid", BindingMode.OneWay);
-            XamlUI.TextBlockBinding(currentAxisReadback.SettingValue, testAxis, "AxisID","D");
+            XamlUI.TextBlockBinding(currentAxisReadback.SettingValue, testAxis, "AxisID", "D");
             XamlUI.CheckBoxBinding((string)testCancelledCheck.Content, testCancelledCheck, testAxis, "CancelTest", BindingMode.OneWay);
             XamlUI.CheckBoxBinding((string)testPausedCheck.Content, testPausedCheck, testAxis, "PauseTest", BindingMode.OneWay);
-            
-            
+
+
 
             //XamlUI.TextboxBinding(testTitleTB, NcTestSettings.TestTitle, "UiVal", UpdateSourceTrigger.LostFocus);
             XamlUI.TextboxBinding(SettingTitle.SettingValue, NcTestSettings.TestTitle, "UiVal", UpdateSourceTrigger.LostFocus);
-            XamlUI.TextboxBinding(SettingTimeout.SettingValue, NcTestSettings.Timeout, "UiVal", UpdateSourceTrigger.LostFocus);                      
+            XamlUI.TextboxBinding(SettingTimeout.SettingValue, NcTestSettings.Timeout, "UiVal", UpdateSourceTrigger.LostFocus);
             XamlUI.TextboxBinding(SettingVelocity.SettingValue, NcTestSettings.Velocity, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingCycles.SettingValue, NcTestSettings.Cycles, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingCycleDelay.SettingValue, NcTestSettings.CycleDelaySeconds, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingReversalVelocity.SettingValue, NcTestSettings.ReversalVelocity, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingReversalExtraSeconds.SettingValue, NcTestSettings.ReversalExtraTimeSeconds, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingReversalSettlingSeconds.SettingValue, NcTestSettings.ReversalSettleTimeSeconds, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingInitialSetpoint.SettingValue, NcTestSettings.InitialSetpoint, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingAccuracySteps.SettingValue, NcTestSettings.NumberOfSteps, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingStepSize.SettingValue, NcTestSettings.StepSize, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingSettlingTime.SettingValue, NcTestSettings.SettleTimeSeconds, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingReversalDistance.SettingValue, NcTestSettings.ReversalDistance, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingOvershootDistance.SettingValue, NcTestSettings.OvershootDistance, "UiVal", UpdateSourceTrigger.LostFocus);
-            
+
             XamlUI.TextboxBinding(SettingEndSetpoint.SettingValue, NcTestSettings.EndSetpoint, "UiVal", UpdateSourceTrigger.LostFocus);
 
             XamlUI.ProgressBarBinding(testProgressBar, testAxis, "TestProgress");
-            if(testAxis!=null)
+            if (testAxis != null)
             {
                 XamlUI.TextBlockBinding(EstimateTime, testAxis.EstimatedTimeRemaining, "TimeRemaining");
                 XamlUI.TextBlockBinding(EstimateEndTime, testAxis.EstimatedTimeRemaining, "StrEndTime");
@@ -115,7 +115,7 @@ namespace TwinCat_Motion_ADS
 
         private void SelectFolderDirectory_Click(object sender, RoutedEventArgs e)
         {
-            if(testAxis == null)
+            if (testAxis == null)
             {
                 Console.WriteLine("Initialise an axis first");
                 return;
@@ -140,185 +140,63 @@ namespace TwinCat_Motion_ADS
             }
 
             //Enable or Disable axis
-            if(sender as Button == enableButton)
+            if (sender as Button == enableButton)
             {
                 await testAxis.SetEnable(!testAxis.AxisEnabled);
             }
             //Reset axis
-            else if(sender as Button == resetButton)
+            else if (sender as Button == resetButton)
             {
                 await testAxis.Reset();
             }
-            else if(sender as Button == moveAbsButton)
+            else if (sender as Button == moveAbsButton)
             {
                 double posCommanded = Convert.ToDouble(windowSetPoint.SettingValue.Text);
                 await testAxis.MoveAbsoluteAndWait(posCommanded, Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text));
             }
             //Move relative
-            else if(sender as Button == moveRelButton)
+            else if (sender as Button == moveRelButton)
             {
                 double posCommanded = Convert.ToDouble(windowSetPoint.SettingValue.Text);
                 await testAxis.MoveRelativeAndWait(posCommanded, Convert.ToDouble(windowVelocity.SettingValue.Text));
             }
             //Move velocity
-            else if(sender as Button == moveVelButton)
+            else if (sender as Button == moveVelButton)
             {
                 await testAxis.MoveVelocity(Convert.ToDouble(windowVelocity.SettingValue.Text));
             }
             //Move to forward limit
-            else if(sender as Button == move2High)
+            else if (sender as Button == move2High)
             {
                 await testAxis.MoveToHighLimit(Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text));
             }
             //Move to backward limit
-            else if(sender as Button == move2Low)
+            else if (sender as Button == move2Low)
             {
                 await testAxis.MoveToLowLimit(Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text));
             }
             //Stop axis
-            else if(sender as Button == stopMove)
+            else if (sender as Button == stopMove)
             {
                 await testAxis.MoveStop();
             }
             //Forward limit reversal
-            else if(sender as Button == highLimReversal)
+            else if (sender as Button == highLimReversal)
             {
                 await testAxis.HighLimitReversal(Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text), Convert.ToInt32(SettingReversalExtraSeconds.SettingValue.Text), Convert.ToInt32(SettingReversalSettlingSeconds.SettingValue.Text));
                 Console.WriteLine(testAxis.AxisPosition);
             }
             //Backward limit reversal
-            else if(sender as Button == lowLimReversal)
+            else if (sender as Button == lowLimReversal)
             {
                 await testAxis.LowLimitReversal(Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text), Convert.ToInt32(SettingReversalExtraSeconds.SettingValue.Text), Convert.ToInt32(SettingReversalSettlingSeconds.SettingValue.Text));
                 Console.WriteLine(testAxis.AxisPosition);
             }
-            else if(sender as Button == homeButton)
+            else if (sender as Button == homeButton)
             {
                 await testAxis.HomeAxisAndWait();
             }
         }
-
-        private async void LimitToLimitTest_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-            if (await testAxis.LimitToLimitTestwithReversingSequence(NcTestSettings, windowData.MeasurementDevices))
-            {
-                Console.WriteLine("Test Complete");
-            }
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-
-        }
-
-        private async void UniDirecitonalTest_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-            if (await testAxis.UniDirectionalAccuracyTest(NcTestSettings, windowData.MeasurementDevices))
-            {}
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-        }
-
-        private async void BiDirecitonalTest_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-
-            if (await testAxis.BiDirectionalAccuracyTest(NcTestSettings, windowData.MeasurementDevices))
-            {          }
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-        }
-
-        private async void ScalingTestButton_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-
-            if (await testAxis.ScalingTest(NcTestSettings, windowData.MeasurementDevices))
-            { }
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-        }
-
-        private async void BacklashTestButton_Click(object sender, RoutedEventArgs e)
-        {
-            windowData.mainWindowGrid.Focus();
-            if (testAxis == null)
-            {
-                Console.WriteLine("No axis initialised");
-                return;
-            }
-            if (selectedFolder == string.Empty)
-            {
-                Console.WriteLine("No save directory selected");
-                return;
-            }
-            cancelTest.IsEnabled = true;
-            pauseTest.IsEnabled = true;
-
-            if (await testAxis.BacklashDetectionTest(NcTestSettings, windowData.MeasurementDevices))
-            { }
-            else
-            {
-                Console.WriteLine("Test did not complete");
-            }
-        }
-
 
         private void CancelTest_Click(object sender, RoutedEventArgs e)
         {
@@ -340,7 +218,7 @@ namespace TwinCat_Motion_ADS
             testAxis.PauseTest = !testAxis.PauseTest;
         }
 
-        
+
 
         private void LoadSettingsFile_Click(object sender, RoutedEventArgs e)
         {
@@ -353,12 +231,29 @@ namespace TwinCat_Motion_ADS
                 NcTestSettings.ImportSettingsXML(selectedFile);
             }
             Console.WriteLine(selectedFolder);
-            
+
         }
 
         private void ncWindowGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             ncWindowGrid.Focus();
+        }
+
+        private async void EnableAxisControls(bool Enabled)
+        {
+            enableButton.IsEnabled = Enabled;
+            resetButton.IsEnabled = Enabled;
+            moveAbsButton.IsEnabled = Enabled;
+            moveRelButton.IsEnabled = Enabled;
+            moveVelButton.IsEnabled = Enabled;
+            move2High.IsEnabled = Enabled;
+            move2Low.IsEnabled = Enabled;
+            stopMove.IsEnabled = Enabled;
+            highLimReversal.IsEnabled = Enabled;
+            lowLimReversal.IsEnabled = Enabled;
+            homeButton.IsEnabled = Enabled;
+            folderDirSelect.IsEnabled = Enabled;
+            testButton.IsEnabled = Enabled;
         }
 
         private async void RunSelectedTestButton_Click(object sender, RoutedEventArgs e)
@@ -374,6 +269,7 @@ namespace TwinCat_Motion_ADS
                 Console.WriteLine("No save directory selected");
                 return;
             }
+            EnableAxisControls(false);
             SetEnableOnUiElements(true);
             switch(TestSelectionComboBox.SelectedItem)
             {
@@ -419,9 +315,21 @@ namespace TwinCat_Motion_ADS
                         Console.WriteLine("Test did not complete");
                     }
                     break;
+                case TestTypes.HomeTest:
+                    if (await testAxis.HomingRepeatabilityTest(NcTestSettings, windowData.MeasurementDevices))
+                    { }
+                    else
+                    {
+                        Console.WriteLine("Test did not complete");
+                    }
+                    break;
+                case TestTypes.NoneSelected:
+                    Console.WriteLine("No test selected");
+                    break;
                 default:
                     break;
             }
+            EnableAxisControls(true);
             SetEnableOnUiElements();
         }
 
@@ -538,6 +446,23 @@ namespace TwinCat_Motion_ADS
                     SettingStepSize.IsEnabled = true;
                     SettingSettlingTime.IsEnabled = true;
                     SettingReversalDistance.IsEnabled = true;
+                    SettingOvershootDistance.IsEnabled = false;
+                    break;
+                case TestTypes.HomeTest:
+                    SettingTitle.IsEnabled = true;
+                    SettingCycles.IsEnabled = true;
+                    SettingCycleDelay.IsEnabled = true;
+                    SettingVelocity.IsEnabled = true;
+                    SettingTimeout.IsEnabled = true;
+                    SettingReversalVelocity.IsEnabled = false;
+                    SettingReversalExtraSeconds.IsEnabled = false;
+                    SettingReversalSettlingSeconds.IsEnabled = false;
+                    SettingInitialSetpoint.IsEnabled = false;
+                    SettingEndSetpoint.IsEnabled = true;
+                    SettingAccuracySteps.IsEnabled = false;
+                    SettingStepSize.IsEnabled = false;
+                    SettingSettlingTime.IsEnabled = true;
+                    SettingReversalDistance.IsEnabled = false;
                     SettingOvershootDistance.IsEnabled = false;
                     break;
                 case TestTypes.NoneSelected:

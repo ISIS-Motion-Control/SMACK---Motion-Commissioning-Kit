@@ -26,10 +26,15 @@
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
+    <MapFileExtensions>false</MapFileExtensions>
+    <ProductName>SMACK - XL80</ProductName>
+    <PublisherName>SCooper</PublisherName>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>7</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -74,27 +79,30 @@
       <HintPath>bin\Debug\Interop.DX10SERVERLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-
     <Reference Include="LocalHost">
       <HintPath>bin\Debug\LocalHost.dll</HintPath>
     </Reference>
     <Reference Include="Renishaw.Calibration">
       <HintPath>bin\Debug\Renishaw.Calibration.dll</HintPath>
     </Reference>
-    <Reference Include="Renishaw.Calibration.ServiceModel">
-      <HintPath>bin\Debug\Renishaw.Calibration.ServiceModel.dll</HintPath>
+    <Reference Include="Renishaw.Calibration.ServiceModel, Version=1.9.7691.15815, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\debug\Renishaw.Calibration.ServiceModel.dll</HintPath>
     </Reference>
-    <Reference Include="Renishaw.IO">
-      <HintPath>bin\Debug\Renishaw.IO.dll</HintPath>
+    <Reference Include="Renishaw.IO, Version=1.26.8105.16824, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\debug\Renishaw.IO.dll</HintPath>
     </Reference>
     <Reference Include="RenishawDX10Service">
-      <HintPath>bin\Debug\RenishawDX10Service.dll</HintPath>
+      <HintPath>bin\debug\RenishawDX10Service.dll</HintPath>
     </Reference>
-    <Reference Include="RenishawLaserService">
-      <HintPath>bin\Debug\RenishawLaserService.dll</HintPath>
+    <Reference Include="RenishawLaserService, Version=1.20.7832.16464, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\debug\RenishawLaserService.dll</HintPath>
     </Reference>
-    <Reference Include="RenishawWeatherStationService">
-      <HintPath>bin\Debug\RenishawWeatherStationService.dll</HintPath>
+    <Reference Include="RenishawWeatherStationService, Version=1.13.7832.16464, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\debug\RenishawWeatherStationService.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -108,17 +116,20 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UsbIo">
-      <HintPath>bin\Debug\UsbIo.dll</HintPath>
+    <Reference Include="UsbIo, Version=1.7.7836.19713, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\debug\UsbIo.dll</HintPath>
     </Reference>
-    <Reference Include="UsbTmc">
-      <HintPath>bin\Debug\UsbTmc.dll</HintPath>
+    <Reference Include="UsbTmc, Version=1.7.7836.19719, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\debug\UsbTmc.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="XLLaserSystem">
-      <HintPath>bin\Debug\XLLaserSystem.dll</HintPath>
+    <Reference Include="XLLaserSystem, Version=1.21.7832.16464, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\debug\XLLaserSystem.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
