@@ -172,4 +172,23 @@ namespace TwinCat_Motion_ADS
         [StringValue("NoneSelected")]
         NoneSelected
     }
+
+    public static class TestNameValidator
+    {
+        private static readonly char[] IllegalChars = Path.GetInvalidFileNameChars(); // includes all illegal filename chars
+
+        public static string Sanitize(string name)
+        {
+            foreach (var c in IllegalChars)
+            {
+                name = name.Replace(c, '_'); // replace illegal chars with underscore
+            }
+            return name;
+        }
+
+        public static bool IsValid(string name)
+        {
+            return name.IndexOfAny(IllegalChars) < 0;
+        }
+    }
 }

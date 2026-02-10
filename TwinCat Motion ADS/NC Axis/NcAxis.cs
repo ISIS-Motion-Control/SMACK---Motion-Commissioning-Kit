@@ -1765,6 +1765,7 @@ namespace TwinCat_Motion_ADS
         public string GenerateTestFileName(NcTestSettings ts)
         {
             DateTime currentTime = DateTime.Now;
+            ts.TestTitle.UiVal = TestNameValidator.Sanitize(ts.TestTitle.UiVal);
             string testTitle = string.Format(@"{0:yyMMdd} {0:HH}h{0:mm}m{0:ss}s Axis {1}~ " + ts.TestTitle.UiVal, currentTime, AxisID);
             string filePath = TestDirectory + @"\" + testTitle;
             return filePath;

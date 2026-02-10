@@ -484,5 +484,10 @@ namespace TwinCat_Motion_ADS
                     break;
             }
         }
+
+        private void SettingInitialSetpoint_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
