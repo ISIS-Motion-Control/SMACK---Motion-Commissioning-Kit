@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 
@@ -19,5 +20,6 @@ namespace TwinCat_Motion_ADS
         public int BoxWidth { get; set; } = 200;
         public string strTests { get; set; }
         public int TextWidth { get; set; } = 260;
+        public Thickness LabelMargin { get; set; } = new Thickness(0, 0, 20, 0);
     }
 }

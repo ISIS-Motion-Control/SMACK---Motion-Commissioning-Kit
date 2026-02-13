@@ -75,6 +75,7 @@ namespace TwinCat_Motion_ADS
         public SettingDouble ReversalDistance { get; set; } = new("reversalDistance");
         public SettingDouble OvershootDistance = new("overshootDistance");
         public SettingDouble EndSetpoint { get; set; } = new("endSetpoint");
+        public SettingUint AxisSelection { get; set; } = new("axisSelection");
 
         public SettingTestType TestType { get; set; } = new("testType");
 
@@ -116,7 +117,7 @@ namespace TwinCat_Motion_ADS
         {
             CreateAndAppendXmlNode(parentNode, xmlDoc, "testType", this.TestType.UiVal);
             CreateAndAppendXmlNode(parentNode, xmlDoc, "testTitle", this.TestTitle.UiVal);
-            CreateAndAppendXmlNode(parentNode, xmlDoc, "axisId", axisNum.ToString());
+            CreateAndAppendXmlNode(parentNode, xmlDoc, "axisId", this.AxisSelection.UiVal);
             CreateAndAppendXmlNode(parentNode, xmlDoc, "velocity", this.Velocity.UiVal);
             CreateAndAppendXmlNode(parentNode, xmlDoc, "timeout", this.Timeout.UiVal);
             CreateAndAppendXmlNode(parentNode, xmlDoc, "cycles", this.Cycles.UiVal);

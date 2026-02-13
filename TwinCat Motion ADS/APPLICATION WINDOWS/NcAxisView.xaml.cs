@@ -49,13 +49,14 @@ namespace TwinCat_Motion_ADS
 
         private void InitialiseAxis_Click(object sender, RoutedEventArgs e)
         {
+            uint axisId = Convert.ToUInt32(NcTestSettings.AxisSelection.UiVal);
             if (testAxis == null)
             {
-                testAxis = new NcAxis(Convert.ToUInt32(axisSelection.Text), windowData.Plc);
+                testAxis = new NcAxis(axisId, windowData.Plc);
             }
             else
             {
-                testAxis.UpdateAxisInstance(Convert.ToUInt32(axisSelection.Text), windowData.Plc);
+                testAxis.UpdateAxisInstance(axisId, windowData.Plc);
             }
             SetupBinds();
         }
@@ -63,6 +64,7 @@ namespace TwinCat_Motion_ADS
         public void SetupBinds()
         {
             //Binds all the UI elemets to properties in the NC Axis
+            XamlUI.TextboxBinding(AxisSelection.SettingValue, NcTestSettings.AxisSelection, "UiVal", UpdateSourceTrigger.PropertyChanged);
             XamlUI.TextBlockBinding(positionReadback.SettingValue, testAxis, "AxisPosition");
             XamlUI.CheckBoxBinding((string)enabledCheck.Content, enabledCheck, testAxis, "AxisEnabled", BindingMode.OneWay);
             XamlUI.CheckBoxBinding((string)fwEnabledCheck.Content, fwEnabledCheck, testAxis, "AxisFwEnabled", BindingMode.OneWay);
@@ -486,6 +488,11 @@ namespace TwinCat_Motion_ADS
         }
 
         private void SettingInitialSetpoint_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void axisSelection_Loaded(object sender, RoutedEventArgs e)
         {
 
         }

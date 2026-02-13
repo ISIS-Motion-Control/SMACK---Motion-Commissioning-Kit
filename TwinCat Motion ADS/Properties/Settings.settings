@@ -110,5 +110,8 @@
     <Setting Name="XL80exe" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Program Files\SMACK_Comissioning_Software\XL80\Renishaw_XL80_App.exe</Value>
     </Setting>
+    <Setting Name="axisSelection" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

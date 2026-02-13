@@ -454,5 +454,17 @@ namespace TwinCat_Motion_ADS.Properties {
                 this["XL80exe"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string axisSelection {
+            get {
+                return ((string)(this["axisSelection"]));
+            }
+            set {
+                this["axisSelection"] = value;
+            }
+        }
     }
 }
