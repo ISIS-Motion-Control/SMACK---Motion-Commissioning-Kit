@@ -37,6 +37,9 @@ namespace TwinCat_Motion_ADS
             OvershootDistance.UiVal = Properties.Settings.Default.overshootDistance;
             EndSetpoint.UiVal = Properties.Settings.Default.endSetpoint;
             TestType.UiVal = Properties.Settings.Default.testType;
+            AxisSelection.UiVal = Properties.Settings.Default.axisSelection;
+            WindowSetPoint.UiVal = Properties.Settings.Default.windowSetPoint;
+            WindowVelocity.UiVal= Properties.Settings.Default.windowVelocity;
         }
 
         public void ResetSettings()
@@ -58,6 +61,9 @@ namespace TwinCat_Motion_ADS
             OvershootDistance.UiVal = "0";
             EndSetpoint.UiVal = "0";
             TestType.UiVal = TestTypes.NoneSelected.GetStringValue();
+            AxisSelection.UiVal = "0";
+            WindowSetPoint.UiVal = "0";
+            WindowVelocity.UiVal = "0";
         }
        
         public SettingString TestTitle { get; set; } = new("testTitle");

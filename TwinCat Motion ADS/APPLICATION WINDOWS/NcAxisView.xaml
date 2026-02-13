@@ -23,8 +23,8 @@
                         <StackPanel Orientation="Vertical">
                             <local:ReadbackControlMainWindow x:Name="currentAxisReadback" SetName="Sel. Axis:" SetValue="0" BoxWidth="100" TextWidth="100"/>
                             <local:ReadbackControlMainWindow x:Name="positionReadback" SetName="Position:" SetValue="0" BoxWidth="100" TextWidth="100"/>
-                            <local:SettingControlMainWindow x:Name="windowSetPoint" SetName="Setpoint:" SetValue="0" BoxWidth="100" TextWidth="100"/>
-                            <local:SettingControlMainWindow x:Name="windowVelocity" SetName="Velocity:" SetValue="0" BoxWidth="100" TextWidth="100"/>
+                            <local:SettingControlMainWindow x:Name="windowSetPoint" SetName="Setpoint:" BoxWidth="100" TextWidth="100"/>
+                            <local:SettingControlMainWindow x:Name="windowVelocity" SetName="Velocity:" BoxWidth="100" TextWidth="100"/>
                         </StackPanel>
                         <!--Axis statuses-->
                         <StackPanel Orientation="Vertical">
