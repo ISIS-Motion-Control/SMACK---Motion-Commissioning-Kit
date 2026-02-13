@@ -76,6 +76,8 @@ namespace TwinCat_Motion_ADS
         public SettingDouble OvershootDistance = new("overshootDistance");
         public SettingDouble EndSetpoint { get; set; } = new("endSetpoint");
         public SettingUint AxisSelection { get; set; } = new("axisSelection");
+        public SettingDouble WindowSetPoint { get; set; } = new("windowSetPoint");
+        public SettingDouble WindowVelocity { get; set; } = new("windowVelocity");
 
         public SettingTestType TestType { get; set; } = new("testType");
 

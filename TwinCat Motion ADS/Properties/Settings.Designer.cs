@@ -466,5 +466,29 @@ namespace TwinCat_Motion_ADS.Properties {
                 this["axisSelection"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string windowSetPoint {
+            get {
+                return ((string)(this["windowSetPoint"]));
+            }
+            set {
+                this["windowSetPoint"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string windowVelocity {
+            get {
+                return ((string)(this["windowVelocity"]));
+            }
+            set {
+                this["windowVelocity"] = value;
+            }
+        }
     }
 }

@@ -65,6 +65,8 @@ namespace TwinCat_Motion_ADS
         {
             //Binds all the UI elemets to properties in the NC Axis
             XamlUI.TextboxBinding(AxisSelection.SettingValue, NcTestSettings.AxisSelection, "UiVal", UpdateSourceTrigger.PropertyChanged);
+            XamlUI.TextboxBinding(windowSetPoint.SettingValue, NcTestSettings.WindowSetPoint, "UiVal", UpdateSourceTrigger.PropertyChanged);
+            XamlUI.TextboxBinding(windowVelocity.SettingValue, NcTestSettings.WindowVelocity, "UiVal", UpdateSourceTrigger.PropertyChanged);
             XamlUI.TextBlockBinding(positionReadback.SettingValue, testAxis, "AxisPosition");
             XamlUI.CheckBoxBinding((string)enabledCheck.Content, enabledCheck, testAxis, "AxisEnabled", BindingMode.OneWay);
             XamlUI.CheckBoxBinding((string)fwEnabledCheck.Content, fwEnabledCheck, testAxis, "AxisFwEnabled", BindingMode.OneWay);
@@ -153,29 +155,27 @@ namespace TwinCat_Motion_ADS
             }
             else if (sender as Button == moveAbsButton)
             {
-                double posCommanded = Convert.ToDouble(windowSetPoint.SettingValue.Text);
-                await testAxis.MoveAbsoluteAndWait(posCommanded, Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text));
+                await testAxis.MoveAbsoluteAndWait(NcTestSettings.WindowSetPoint.Val, NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text));
             }
             //Move relative
             else if (sender as Button == moveRelButton)
             {
-                double posCommanded = Convert.ToDouble(windowSetPoint.SettingValue.Text);
-                await testAxis.MoveRelativeAndWait(posCommanded, Convert.ToDouble(windowVelocity.SettingValue.Text));
+                await testAxis.MoveRelativeAndWait(NcTestSettings.WindowSetPoint.Val, NcTestSettings.WindowVelocity.Val);
             }
             //Move velocity
             else if (sender as Button == moveVelButton)
             {
-                await testAxis.MoveVelocity(Convert.ToDouble(windowVelocity.SettingValue.Text));
+                await testAxis.MoveVelocity(NcTestSettings.WindowVelocity.Val);
             }
             //Move to forward limit
             else if (sender as Button == move2High)
             {
-                await testAxis.MoveToHighLimit(Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text));
+                await testAxis.MoveToHighLimit(NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text));
             }
             //Move to backward limit
             else if (sender as Button == move2Low)
             {
-                await testAxis.MoveToLowLimit(Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text));
+                await testAxis.MoveToLowLimit(NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text));
             }
             //Stop axis
             else if (sender as Button == stopMove)
@@ -185,13 +185,13 @@ namespace TwinCat_Motion_ADS
             //Forward limit reversal
             else if (sender as Button == highLimReversal)
             {
-                await testAxis.HighLimitReversal(Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text), Convert.ToInt32(SettingReversalExtraSeconds.SettingValue.Text), Convert.ToInt32(SettingReversalSettlingSeconds.SettingValue.Text));
+                await testAxis.HighLimitReversal(NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text), Convert.ToInt32(SettingReversalExtraSeconds.SettingValue.Text), Convert.ToInt32(SettingReversalSettlingSeconds.SettingValue.Text));
                 Console.WriteLine(testAxis.AxisPosition);
             }
             //Backward limit reversal
             else if (sender as Button == lowLimReversal)
             {
-                await testAxis.LowLimitReversal(Convert.ToDouble(windowVelocity.SettingValue.Text), Convert.ToInt32(SettingTimeout.SettingValue.Text), Convert.ToInt32(SettingReversalExtraSeconds.SettingValue.Text), Convert.ToInt32(SettingReversalSettlingSeconds.SettingValue.Text));
+                await testAxis.LowLimitReversal(NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text), Convert.ToInt32(SettingReversalExtraSeconds.SettingValue.Text), Convert.ToInt32(SettingReversalSettlingSeconds.SettingValue.Text));
                 Console.WriteLine(testAxis.AxisPosition);
             }
             else if (sender as Button == homeButton)
@@ -243,6 +243,9 @@ namespace TwinCat_Motion_ADS
 
         private async void EnableAxisControls(bool Enabled)
         {
+            AxisSelection.IsEnabled = Enabled;
+            windowSetPoint.IsEnabled = Enabled;
+            windowVelocity.IsEnabled = Enabled;
             enableButton.IsEnabled = Enabled;
             resetButton.IsEnabled = Enabled;
             moveAbsButton.IsEnabled = Enabled;
