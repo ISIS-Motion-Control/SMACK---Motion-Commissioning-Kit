@@ -155,7 +155,7 @@ namespace TwinCat_Motion_ADS
             }
             else if (sender as Button == moveAbsButton)
             {
-                await testAxis.MoveAbsoluteAndWait(NcTestSettings.WindowSetPoint.Val, NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text));
+                await testAxis.MoveAbsoluteAndWait(NcTestSettings.WindowSetPoint.Val, NcTestSettings.WindowVelocity.Val, (int)NcTestSettings.Timeout.Val);
             }
             //Move relative
             else if (sender as Button == moveRelButton)
@@ -170,12 +170,12 @@ namespace TwinCat_Motion_ADS
             //Move to forward limit
             else if (sender as Button == move2High)
             {
-                await testAxis.MoveToHighLimit(NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text));
+                await testAxis.MoveToHighLimit(NcTestSettings.WindowVelocity.Val, (int)NcTestSettings.Timeout.Val);
             }
             //Move to backward limit
             else if (sender as Button == move2Low)
             {
-                await testAxis.MoveToLowLimit(NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text));
+                await testAxis.MoveToLowLimit(NcTestSettings.WindowVelocity.Val, (int)NcTestSettings.Timeout.Val);
             }
             //Stop axis
             else if (sender as Button == stopMove)
@@ -185,13 +185,13 @@ namespace TwinCat_Motion_ADS
             //Forward limit reversal
             else if (sender as Button == highLimReversal)
             {
-                await testAxis.HighLimitReversal(NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text), Convert.ToInt32(SettingReversalExtraSeconds.SettingValue.Text), Convert.ToInt32(SettingReversalSettlingSeconds.SettingValue.Text));
+                await testAxis.HighLimitReversal(NcTestSettings.WindowVelocity.Val, (int)NcTestSettings.Timeout.Val, (int)NcTestSettings.ReversalExtraTimeSeconds.Val, (int)NcTestSettings.ReversalSettleTimeSeconds.Val);
                 Console.WriteLine(testAxis.AxisPosition);
             }
             //Backward limit reversal
             else if (sender as Button == lowLimReversal)
             {
-                await testAxis.LowLimitReversal(NcTestSettings.WindowVelocity.Val, Convert.ToInt32(SettingTimeout.SettingValue.Text), Convert.ToInt32(SettingReversalExtraSeconds.SettingValue.Text), Convert.ToInt32(SettingReversalSettlingSeconds.SettingValue.Text));
+                await testAxis.LowLimitReversal(NcTestSettings.WindowVelocity.Val, (int)NcTestSettings.Timeout.Val, (int)NcTestSettings.ReversalExtraTimeSeconds.Val, (int)NcTestSettings.ReversalSettleTimeSeconds.Val);
                 Console.WriteLine(testAxis.AxisPosition);
             }
             else if (sender as Button == homeButton)
