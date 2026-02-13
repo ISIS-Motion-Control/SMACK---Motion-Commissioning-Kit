@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="TwinCat_Motion_ADS.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TwinCat_Motion_ADS"
+             mc:Ignorable="d" 
+             d:DesignHeight="890" d:DesignWidth="1100">
+    <Grid x:Name="settingsWindowGrid" Margin="0" Focusable="True">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top">
+                <local:SettingControlMainWindow x:Name="SettingAmsNetId" SetName="AMS NET ID:" BoxWidth="300" TextWidth="200"/>
+                <Button x:Name="connect2PlcButton" Focusable="False" Content="Connect to PLC" Click="ConnectToPlc_Click" Height="30" FontSize="16" Style="{StaticResource myDefaultButton}" Margin="0" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top">
+                <local:SettingControlMainWindow x:Name="SettingXl80Path" SetName="XL80 Exe Path:" BoxWidth="400" TextWidth="200"/>
+                <Button x:Name="selectXl80Path" Focusable="False" Content="Select file" Click="selectXl80Path_Click" Height="30" FontSize="16" Style="{StaticResource myDefaultButton}" Margin="0" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="To connect to an XL80, uncompress the folder included in the git repository that contains the published XL80 exe file. Then from this screen select that exe file." Foreground="White"/>
+            </StackPanel>
+        </StackPanel>
+        
+
+
+
+
+
+
+
+    </Grid>
+</UserControl>

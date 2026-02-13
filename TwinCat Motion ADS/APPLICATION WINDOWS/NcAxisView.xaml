@@ -13,10 +13,9 @@
 
                     <!-- Initialise Axis -->
                     <StackPanel x:Name="initAxisPanel" Orientation="Horizontal" Margin="5">
-                        <TextBox x:Name="axisSelection" Text="1" Width="50" TextAlignment="Center" HorizontalAlignment="Left" FontSize="20"/>
+                        <local:SettingControlMainWindow x:Name="AxisSelection" SetValue="0" BoxWidth="50" Width="50" LabelMargin="0,0,0,0" TextWidth="0"/>
                         <Button x:Name="initAxis" Focusable="False" Content="initAxis" Click="InitialiseAxis_Click" Width="80" Style="{StaticResource myDefaultButton}" Margin="20,0,0,0" VerticalAlignment="Center"/>
                         <CheckBox x:Name="validAxis"  IsEnabled="False" Height="24" Width="180" HorizontalAlignment="Left" Margin="5,5,0,0" Style="{StaticResource checkBoxTheme}" Content="Axis Connection"/>
-
                     </StackPanel>
 
                     <StackPanel x:Name="statusAndSettings" Orientation="Horizontal">
@@ -24,8 +23,8 @@
                         <StackPanel Orientation="Vertical">
                             <local:ReadbackControlMainWindow x:Name="currentAxisReadback" SetName="Sel. Axis:" SetValue="0" BoxWidth="100" TextWidth="100"/>
                             <local:ReadbackControlMainWindow x:Name="positionReadback" SetName="Position:" SetValue="0" BoxWidth="100" TextWidth="100"/>
-                            <local:SettingControlMainWindow x:Name="windowSetPoint" SetName="Setpoint:" SetValue="0" BoxWidth="100" TextWidth="100"/>
-                            <local:SettingControlMainWindow x:Name="windowVelocity" SetName="Velocity:" SetValue="0" BoxWidth="100" TextWidth="100"/>
+                            <local:SettingControlMainWindow x:Name="windowSetPoint" SetName="Setpoint:" BoxWidth="100" TextWidth="100"/>
+                            <local:SettingControlMainWindow x:Name="windowVelocity" SetName="Velocity:" BoxWidth="100" TextWidth="100"/>
                         </StackPanel>
                         <!--Axis statuses-->
                         <StackPanel Orientation="Vertical">

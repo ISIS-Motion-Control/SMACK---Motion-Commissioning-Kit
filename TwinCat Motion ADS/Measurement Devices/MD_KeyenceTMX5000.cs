@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System;
+using System.Drawing.Printing;
 
 namespace TwinCat_Motion_ADS.MeasurementDevice
 {    
@@ -18,6 +19,7 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
 
             ChConnected = new bool[KEYENCE_MAX_CHANNELS];
             ChName = new string[KEYENCE_MAX_CHANNELS];
+            ChToolNumber = new string[KEYENCE_MAX_CHANNELS];
         }
         private const int defaultTimeout = 1000;
 
@@ -25,6 +27,8 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
         public int KEYENCE_MAX_CHANNELS { get { return _KEYENCE_MAX_CHANNELS; } }
         public bool[] ChConnected { get; set; }
         public string[] ChName { get; set; }
+
+        public string[] ChToolNumber { get; set; }
 
         public new bool Disconnect()
         {
@@ -103,20 +107,20 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
 
             //Send GM,0,1,ID as my message. Tool channels appear to come in as 200,201,202,203 etc
             var txBuf = new byte[] { 0x47, 0x4D, 0x2C, 0x30, 0x2C, 0x31, 0x2C, 0x30, 0x30, 0x30, 0x0D };
-            txBuf[7] = 0x32;
-            if (measurementChannel>10)
-            {
-                txBuf[8] = 0x31;
-                txBuf[9] = Convert.ToByte(measurementChannel + 37);
-            }
-            else
-            {
-                txBuf[8] = 0x30;
-                txBuf[9] = Convert.ToByte(measurementChannel + 47);
-            }
-            
+
+            //Take the ToolNumber for the current channel being measured
+            string toolID = ChToolNumber[measurementChannel-1].PadLeft(3, '0');
+            txBuf[7] = (byte)toolID[0];
+            txBuf[8] = (byte)toolID[1];
+            txBuf[9] = (byte)toolID[2];
+
+            IsValidToolNumberWithErrorMessage(measurementChannel);
+
+
+
             //create a buffer to hold the returned value
             var rxBuf = new byte[15];
+            
             rxBuf = await ReadAsyncBuff(txBuf, 15, ct, timeoutMilliSeconds);
             if (rxBuf.Length != 15) //Device should always return 29 bytes for a single channel read
             {
@@ -158,6 +162,21 @@ namespace TwinCat_Motion_ADS.MeasurementDevice
                 ct.Cancel();
                 return System.Array.Empty<byte>(); //if timeout return empty array
             }
+        }
+
+        public bool IsValidToolNumberWithErrorMessage(int currentChannel)
+        {
+            int.TryParse(ChToolNumber[currentChannel - 1], out var toolNumber);
+            if (200 <= toolNumber && toolNumber <= 299)
+            {
+                return true;
+            }
+            else
+            {
+                Console.WriteLine($"Invalid tool number for channel {currentChannel}, must be between 200 and 299");
+                return false;
+            }
+
         }
     }
 

@@ -74,7 +74,7 @@ namespace TwinCat_Motion_ADS
 
             if(TestList.SelectedIndex != -1)
             {
-                if(testItems[TestList.SelectedIndex].TestSettings.TestType.Val == TestTypes.NoneSelected || testItems[TestList.SelectedIndex].TestSettings.TestType.Val == TestTypes.UserPrompt || testItems[TestList.SelectedIndex].TestSettings.TestType.Val == TestTypes.HomeCommand)
+                if(testItems[TestList.SelectedIndex].TestSettings.TestType.Val == TestTypes.NoneSelected || testItems[TestList.SelectedIndex].TestSettings.TestType.Val == TestTypes.UserPrompt || testItems[TestList.SelectedIndex].TestSettings.TestType.Val == TestTypes.HomeTest)
                 {
                     enableFlag = false;
                 }
@@ -412,8 +412,19 @@ namespace TwinCat_Motion_ADS
                             return;
                         }
                         break;
-                    case TestTypes.HomeCommand:
-                        testResult = await NcAxis.HomeAxisAndWait();
+                    case TestTypes.HomeTest:
+                        testResult = await NcAxis.HomingRepeatabilityTest(test.TestSettings, wd.MeasurementDevices);
+                        if (testResult)
+                        {
+                            statusListItems.Add("Complete");
+                        }
+                        else
+                        {
+                            statusListItems.Add("Failed");
+                        }
+                        break;
+                    case TestTypes.NoneSelected:
+                        Console.WriteLine("No test selected");
                         break;
                 }
                 testCounter++;

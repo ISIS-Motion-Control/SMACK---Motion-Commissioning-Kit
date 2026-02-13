@@ -37,6 +37,9 @@ namespace TwinCat_Motion_ADS
             OvershootDistance.UiVal = Properties.Settings.Default.overshootDistance;
             EndSetpoint.UiVal = Properties.Settings.Default.endSetpoint;
             TestType.UiVal = Properties.Settings.Default.testType;
+            AxisSelection.UiVal = Properties.Settings.Default.axisSelection;
+            WindowSetPoint.UiVal = Properties.Settings.Default.windowSetPoint;
+            WindowVelocity.UiVal= Properties.Settings.Default.windowVelocity;
         }
 
         public void ResetSettings()
@@ -58,6 +61,9 @@ namespace TwinCat_Motion_ADS
             OvershootDistance.UiVal = "0";
             EndSetpoint.UiVal = "0";
             TestType.UiVal = TestTypes.NoneSelected.GetStringValue();
+            AxisSelection.UiVal = "0";
+            WindowSetPoint.UiVal = "0";
+            WindowVelocity.UiVal = "0";
         }
        
         public SettingString TestTitle { get; set; } = new("testTitle");
@@ -75,6 +81,9 @@ namespace TwinCat_Motion_ADS
         public SettingDouble ReversalDistance { get; set; } = new("reversalDistance");
         public SettingDouble OvershootDistance = new("overshootDistance");
         public SettingDouble EndSetpoint { get; set; } = new("endSetpoint");
+        public SettingUint AxisSelection { get; set; } = new("axisSelection");
+        public SettingDouble WindowSetPoint { get; set; } = new("windowSetPoint");
+        public SettingDouble WindowVelocity { get; set; } = new("windowVelocity");
 
         public SettingTestType TestType { get; set; } = new("testType");
 
@@ -116,7 +125,7 @@ namespace TwinCat_Motion_ADS
         {
             CreateAndAppendXmlNode(parentNode, xmlDoc, "testType", this.TestType.UiVal);
             CreateAndAppendXmlNode(parentNode, xmlDoc, "testTitle", this.TestTitle.UiVal);
-            CreateAndAppendXmlNode(parentNode, xmlDoc, "axisId", axisNum.ToString());
+            CreateAndAppendXmlNode(parentNode, xmlDoc, "axisId", this.AxisSelection.UiVal);
             CreateAndAppendXmlNode(parentNode, xmlDoc, "velocity", this.Velocity.UiVal);
             CreateAndAppendXmlNode(parentNode, xmlDoc, "timeout", this.Timeout.UiVal);
             CreateAndAppendXmlNode(parentNode, xmlDoc, "cycles", this.Cycles.UiVal);
@@ -167,9 +176,28 @@ namespace TwinCat_Motion_ADS
         BacklashDetection,
         [StringValue("UserPrompt")]
         UserPrompt,
-        [StringValue("HomeCommand")]
-        HomeCommand,
+        [StringValue("HomeTest")]
+        HomeTest,
         [StringValue("NoneSelected")]
         NoneSelected
+    }
+
+    public static class TestNameValidator
+    {
+        private static readonly char[] IllegalChars = Path.GetInvalidFileNameChars(); // includes all illegal filename chars
+
+        public static string Sanitize(string name)
+        {
+            foreach (var c in IllegalChars)
+            {
+                name = name.Replace(c, '_'); // replace illegal chars with underscore
+            }
+            return name;
+        }
+
+        public static bool IsValid(string name)
+        {
+            return name.IndexOfAny(IllegalChars) < 0;
+        }
     }
 }

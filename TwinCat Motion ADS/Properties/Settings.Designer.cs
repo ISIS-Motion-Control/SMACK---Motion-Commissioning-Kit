@@ -12,7 +12,7 @@ namespace TwinCat_Motion_ADS.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -440,6 +440,54 @@ namespace TwinCat_Motion_ADS.Properties {
             }
             set {
                 this["xAxisDec"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\SMACK_Comissioning_Software\\XL80\\Renishaw_XL80_App.exe")]
+        public string XL80exe {
+            get {
+                return ((string)(this["XL80exe"]));
+            }
+            set {
+                this["XL80exe"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string axisSelection {
+            get {
+                return ((string)(this["axisSelection"]));
+            }
+            set {
+                this["axisSelection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string windowSetPoint {
+            get {
+                return ((string)(this["windowSetPoint"]));
+            }
+            set {
+                this["windowSetPoint"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string windowVelocity {
+            get {
+                return ((string)(this["windowVelocity"]));
+            }
+            set {
+                this["windowVelocity"] = value;
             }
         }
     }
