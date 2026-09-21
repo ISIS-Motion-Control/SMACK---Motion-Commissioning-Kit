@@ -1,4 +1,5 @@
 ﻿using System;
+using TwinCAT;
 using TwinCAT.Ads;
 
 namespace TwinCat_Motion_ADS
@@ -49,10 +50,10 @@ namespace TwinCat_Motion_ADS
             {
                 TcAds.Connect(ID, port);
             }
-            catch
+            catch (Exception ex)
             {
-                //Do Nothing - Usually means invalid AMS NET ID format
-            }               
+                System.Diagnostics.Debug.WriteLine($"PLC constructor connect failed: {ex}");
+            }
         }
         #endregion
 
@@ -96,8 +97,9 @@ namespace TwinCat_Motion_ADS
                 AdsState = TcAds.ReadState().AdsState;
                 return AdsState;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"ReadState failed: {ex}");
                 return AdsState.Invalid;
             }
         }
