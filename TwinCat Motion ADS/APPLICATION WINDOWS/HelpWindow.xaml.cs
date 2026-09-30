@@ -25,6 +25,7 @@ namespace TwinCat_Motion_ADS
         public HelpScreen_Bidirectional helpScreen_Bidirectional = new();
         public HelpScreen_Scaling helpScreen_Scaling = new();
         public HelpScreen_Backlash helpScreen_Backlash = new();
+        public HelpScreen_AxisSetup helpScreen_AxisSetup = new();
 
         public HelpWindow()
         {
@@ -52,6 +53,10 @@ namespace TwinCat_Motion_ADS
             if (((MenuItem)sender) == Backlash)
             {
                 helpWindow.Content = helpScreen_Backlash;
+            }
+            if (((MenuItem)sender) == AxisSetup)
+            {
+                helpWindow.Content = helpScreen_AxisSetup;
             }
         }
     }

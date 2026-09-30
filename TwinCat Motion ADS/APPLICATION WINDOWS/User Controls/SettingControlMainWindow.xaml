@@ -19,6 +19,7 @@
                                      Text="{Binding SetValue}"  
                                      VerticalAlignment="Center" 
                                      Width="{Binding BoxWidth}"
+                                     ToolTip="{Binding BoxToolTip}"
                              Margin="0,0,0,0" FontSize="24"/>
         <TextBlock x:Name="TestNumber" HorizontalAlignment="Left"
                    TextAlignment="Left"

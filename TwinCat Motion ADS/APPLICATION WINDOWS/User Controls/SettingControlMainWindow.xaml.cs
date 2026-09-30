@@ -21,5 +21,6 @@ namespace TwinCat_Motion_ADS
         public string strTests { get; set; }
         public int TextWidth { get; set; } = 260;
         public Thickness LabelMargin { get; set; } = new Thickness(0, 0, 20, 0);
+        public string BoxToolTip { get; set; }
     }
 }

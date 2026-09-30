@@ -38,6 +38,7 @@
         
         <!--Left side menu-->
         <Menu Grid.Column="0" Background="#005A90">
+            <MenuItem x:Name="AxisSetup" Header="Axis Setup" Template="{StaticResource VsOnline}" Click="MenuSelect_Click"/>
             <MenuItem x:Name="EndToEnd" Header="End To End" Template="{StaticResource VsOnline}" Click="MenuSelect_Click"/>
             <MenuItem x:Name="Unidirectional" Header="Unidirectional" Template="{StaticResource VsOnline}" Click="MenuSelect_Click"/>
             <MenuItem x:Name="Bidirectional" Header="Bidirectional" Template="{StaticResource VsOnline}" Click="MenuSelect_Click"/>
