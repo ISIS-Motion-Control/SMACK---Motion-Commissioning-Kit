@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,6 +31,8 @@ namespace TwinCat_Motion_ADS
             InitializeComponent();
             windowData = (MainWindow)Application.Current.MainWindow;
             SetupBinds();
+            MainWindow.SetFlashing(initAxis, windowData.IsPlcConnected);   
+            windowData.PropertyChanged += WindowData_PropertyChanged;
             //Cannot use our usual list of enums for item source as it cannot be modified
             //Instead create a temporary holder for the list and create a new list from this with the UserPrompt type removed
             //TestSelectionComboBox.ItemsSource = Enum.GetValues(typeof(TestTypes)).Cast<TestTypes>();
@@ -59,6 +62,12 @@ namespace TwinCat_Motion_ADS
                 testAxis.UpdateAxisInstance(axisId, windowData.Plc);
             }
             SetupBinds();
+            if (testAxis.Valid)
+            {
+                MainWindow.SetFlashing(initAxis, false);
+                MainWindow.SetFlashing(folderDirSelect, true);
+            }
+
         }
 
         public void SetupBinds()
@@ -132,6 +141,17 @@ namespace TwinCat_Motion_ADS
             }
             Console.WriteLine(selectedFolder);
             testAxis.TestDirectory = selectedFolder;
+
+            bool validDirectory = !string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder);
+            MainWindow.SetFlashing(folderDirSelect, !validDirectory);
+        }
+
+        private void WindowData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainWindow.IsPlcConnected))
+            {
+                MainWindow.SetFlashing(initAxis, windowData.IsPlcConnected);
+            }
         }
 
         //Generic method for handling commands to the axis

@@ -9,6 +9,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using TwinCat_Motion_ADS.MeasurementDevice;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace TwinCat_Motion_ADS
 {
@@ -43,6 +45,21 @@ namespace TwinCat_Motion_ADS
                 Properties.Settings.Default.Save();
             }
         }
+
+        private bool _startupComplete = false;
+        private bool _isPlcConnected = false;
+        public bool IsPlcConnected
+        {
+            get { return _isPlcConnected; }
+            set
+            {
+                _isPlcConnected = value;
+                OnPropertyChanged();
+                UpdateSettingsFlash();
+                UpdateNcAxisFlash();
+            }
+        }
+
         #endregion
 
         #region Constructor
@@ -56,6 +73,8 @@ namespace TwinCat_Motion_ADS
 
             AmsNetID = Properties.Settings.Default.amsNetID;
             SetupBinds();
+            UpdateSettingsFlash();
+            UpdateNcAxisFlash();
             if (!string.IsNullOrEmpty(AmsNetID))
             {
                 Plc = new PLC(AmsNetID, 852); 
@@ -75,15 +94,50 @@ namespace TwinCat_Motion_ADS
                     Console.WriteLine("Device connected and running");
 
                 }
+                IsPlcConnected = Plc.AdsState != AdsState.Invalid;
             }
             NcAxisView = new();
             AirAxisView = new();
             CsvHelperView = new();
             SettingsView = new();
             tabbedWindow.Content = NcAxisView;
-           
+
+            _startupComplete = true;
         }
         #endregion
+
+        public static void SetFlashing(Control target, bool flashing)
+        {
+            if (flashing)
+            {
+                var brush = new SolidColorBrush(Colors.Red);
+                target.Background = brush;
+                var animation = new ColorAnimation
+                {
+                    From = Colors.Red,
+                    To = Colors.DarkRed,
+                    Duration = TimeSpan.FromSeconds(1.0),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                brush.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+            }
+            else
+            {
+                target.ClearValue(Control.BackgroundProperty);
+            }
+        }
+
+        private void UpdateSettingsFlash()
+        {
+            SetFlashing(SettingsScreen, !IsPlcConnected);
+        }
+
+        private void UpdateNcAxisFlash()
+        {
+            if (!_startupComplete) return;
+            SetFlashing(NcAxis, IsPlcConnected);
+        }
 
         #region ScaleValue Depdency Property
         public static readonly DependencyProperty ScaleValueProperty = DependencyProperty.Register("ScaleValue", typeof(double), typeof(MainWindow), new UIPropertyMetadata(1.0, new PropertyChangedCallback(OnScaleValueChanged), new CoerceValueCallback(OnCoerceScaleValue)));
@@ -300,6 +354,7 @@ namespace TwinCat_Motion_ADS
             if(((RadioButton)sender) == NcAxis)
             {
                 tabbedWindow.Content = NcAxisView;
+                SetFlashing(NcAxis, false);
             }
             else if(((RadioButton)sender)== AirAxis)
             {

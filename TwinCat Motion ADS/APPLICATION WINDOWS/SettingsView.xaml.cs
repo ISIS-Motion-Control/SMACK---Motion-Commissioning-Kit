@@ -43,6 +43,9 @@ namespace TwinCat_Motion_ADS
             windowData = (MainWindow)Application.Current.MainWindow; 
             SetupBinds();
 
+            MainWindow.SetFlashing(connect2PlcButton, !windowData.IsPlcConnected);  
+            windowData.PropertyChanged += WindowData_PropertyChanged;
+
         }
 
         
@@ -69,6 +72,15 @@ namespace TwinCat_Motion_ADS
             else if (windowData.Plc.AdsState == AdsState.Run)
             {
                 Console.WriteLine("Device connected and running");
+            }
+            windowData.IsPlcConnected = windowData.Plc.AdsState != AdsState.Invalid;
+        }
+
+        private void WindowData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainWindow.IsPlcConnected))
+            {
+                MainWindow.SetFlashing(connect2PlcButton, !windowData.IsPlcConnected);
             }
         }
 

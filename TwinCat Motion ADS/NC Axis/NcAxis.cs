@@ -95,6 +95,7 @@ namespace TwinCat_Motion_ADS
             catch
             {
                 Console.WriteLine("Invalid PLC Configuration - unable to create variable handles");
+                Valid = false;
             }
                    
 
