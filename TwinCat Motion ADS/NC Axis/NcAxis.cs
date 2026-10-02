@@ -43,8 +43,9 @@ namespace TwinCat_Motion_ADS
         private uint bErrorHandle;
         private uint bEnableHandle;
         private uint bResetHandle;
+        private bool _handlesCreated = false;
         #endregion
-        
+
         //Current axis ID
         private uint _axisID;
         public uint AxisID
@@ -64,9 +65,37 @@ namespace TwinCat_Motion_ADS
             EstimatedTimeRemaining = new();
         }
 
+        private void ReleaseHandles()
+        {
+            if (!_handlesCreated) return;
+            try
+            {
+                Plc.TcAds.DeleteVariableHandle(eCommandHandle);
+                Plc.TcAds.DeleteVariableHandle(fVelocityHandle);
+                Plc.TcAds.DeleteVariableHandle(fPositionHandle);
+                Plc.TcAds.DeleteVariableHandle(bExecuteHandle);
+                Plc.TcAds.DeleteVariableHandle(fActPositionHandle);
+                Plc.TcAds.DeleteVariableHandle(bDoneHandle);
+                Plc.TcAds.DeleteVariableHandle(bBusyHandle);
+                Plc.TcAds.DeleteVariableHandle(bFwEnabledHandle);
+                Plc.TcAds.DeleteVariableHandle(bBwEnabledHandle);
+                Plc.TcAds.DeleteVariableHandle(bEnabledHandle);
+                Plc.TcAds.DeleteVariableHandle(bStopHandle);
+                Plc.TcAds.DeleteVariableHandle(bErrorHandle);
+                Plc.TcAds.DeleteVariableHandle(bEnableHandle);
+                Plc.TcAds.DeleteVariableHandle(bResetHandle);
+            }
+            catch
+            {
+                Console.WriteLine("Failed to release previous axis variable handles");
+            }
+            _handlesCreated = false;
+        }
+
         public void UpdateAxisInstance(uint axisID, PLC plc)
         {
             if (!ValidCommand()) return;
+            ReleaseHandles();
             try
             {
                 
@@ -90,12 +119,14 @@ namespace TwinCat_Motion_ADS
                 bResetHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stControl.bReset");
                 //StartPositionRead();
                 ReadStatuses();
+                _handlesCreated = true;
                 
             }
             catch
             {
                 Console.WriteLine("Invalid PLC Configuration - unable to create variable handles");
                 Valid = false;
+                _handlesCreated = false;
             }
                    
 
