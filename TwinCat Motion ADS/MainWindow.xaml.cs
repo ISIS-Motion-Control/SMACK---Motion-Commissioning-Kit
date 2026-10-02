@@ -189,6 +189,7 @@ namespace TwinCat_Motion_ADS
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            Plc?.Dispose();
             if (NcAxisView.testAxis != null)
             {
                 if (NcAxisView.testAxis.testRunning)

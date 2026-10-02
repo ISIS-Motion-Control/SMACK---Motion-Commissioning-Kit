@@ -4,7 +4,7 @@ using TwinCAT.Ads;
 
 namespace TwinCat_Motion_ADS
 {
-    public class PLC
+    public class PLC : IDisposable
     {
         #region Properties
         private AdsClient _tcAds = new AdsClient();
@@ -81,6 +81,18 @@ namespace TwinCat_Motion_ADS
             {
                 Console.WriteLine("Disconnect Failed");
                 return false;
+            }
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                TcAds?.Dispose();
+            }
+            catch
+            {
+                Console.WriteLine("Dispose failed");
             }
         }
 

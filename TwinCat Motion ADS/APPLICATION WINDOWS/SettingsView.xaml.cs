@@ -59,6 +59,7 @@ namespace TwinCat_Motion_ADS
         private void ConnectToPlc_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Connecting to PLC...");
+            windowData.Plc?.Dispose();
             windowData.Plc = new PLC(AmsNetIdSetting.Val, 852);
             windowData.Plc.setupPLC();
             if (windowData.Plc.AdsState == AdsState.Invalid)
