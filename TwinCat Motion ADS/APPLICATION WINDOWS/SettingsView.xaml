@@ -11,6 +11,7 @@
             <StackPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top">
                 <local:SettingControlMainWindow x:Name="SettingAmsNetId" SetName="AMS NET ID:" BoxWidth="300" TextWidth="200"/>
                 <Button x:Name="connect2PlcButton" Focusable="False" Content="Connect to PLC" Click="ConnectToPlc_Click" Height="30" FontSize="16" Style="{StaticResource myDefaultButton}" Margin="0" VerticalAlignment="Center"/>
+                <local:SettingControlMainWindow x:Name="SettingPortID" SetName="Port ID:" BoxWidth="50" TextWidth="200" IsEnabled="False" SetValue="852"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top">
                 <local:SettingControlMainWindow x:Name="SettingXl80Path" SetName="XL80 Exe Path:" BoxWidth="400" TextWidth="200"/>
