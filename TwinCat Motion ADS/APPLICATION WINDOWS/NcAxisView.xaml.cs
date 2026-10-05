@@ -65,7 +65,8 @@ namespace TwinCat_Motion_ADS
             if (testAxis.Valid)
             {
                 MainWindow.SetFlashing(initAxis, false);
-                MainWindow.SetFlashing(folderDirSelect, true);
+                bool validDirectory = !string.IsNullOrEmpty(selectedFolder) && Directory.Exists(selectedFolder);
+                MainWindow.SetFlashing(folderDirSelect, !validDirectory);
             }
 
         }
