@@ -120,14 +120,18 @@ namespace TwinCat_Motion_ADS
         }
         protected bool ValidCommand() //always going to check if PLC is valid or not
         {
-            if (!Plc.IsStateRun())
+            if (!Plc.IsStateRun() || !AdditionalValidityCheck())
             {
-                Console.WriteLine("Incorrect PLC configuration");
                 Valid = false;
                 return false;
             }
 
             Valid = true;
+            return true;
+        }
+
+        protected virtual bool AdditionalValidityCheck()
+        {
             return true;
         }
 

@@ -70,6 +70,7 @@ namespace TwinCat_Motion_ADS
             if (!_handlesCreated) return;
             try
             {
+                Console.WriteLine("Handles Released");
                 Plc.TcAds.DeleteVariableHandle(eCommandHandle);
                 Plc.TcAds.DeleteVariableHandle(fVelocityHandle);
                 Plc.TcAds.DeleteVariableHandle(fPositionHandle);
@@ -92,14 +93,17 @@ namespace TwinCat_Motion_ADS
             _handlesCreated = false;
         }
 
+        protected override bool AdditionalValidityCheck()
+        {
+            return _handlesCreated;
+        }
+
         public void UpdateAxisInstance(uint axisID, PLC plc)
         {
-            if (!ValidCommand()) return;
+            //if (!ValidCommand()) return; 
             ReleaseHandles();
             try
             {
-                
-                
                 AxisID = axisID;
                 Plc = plc;
                 //These variable handles rely on the twinCAT standard solution naming.
