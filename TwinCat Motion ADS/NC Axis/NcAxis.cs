@@ -100,7 +100,13 @@ namespace TwinCat_Motion_ADS
 
         public void UpdateAxisInstance(uint axisID, PLC plc)
         {
-            //if (!ValidCommand()) return; 
+            if (!plc.IsStateRun())
+            {
+                Console.WriteLine("Incorrect PLC configuration");
+                Valid = false;
+                _handlesCreated = false;
+                return;
+            }
             ReleaseHandles();
             try
             {
@@ -124,6 +130,7 @@ namespace TwinCat_Motion_ADS
                 //StartPositionRead();
                 ReadStatuses();
                 _handlesCreated = true;
+                Valid = true;
                 
             }
             catch
