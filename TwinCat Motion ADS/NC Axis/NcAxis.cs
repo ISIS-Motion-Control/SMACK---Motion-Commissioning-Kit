@@ -70,7 +70,6 @@ namespace TwinCat_Motion_ADS
             if (!_handlesCreated) return;
             try
             {
-                Console.WriteLine("Handles Released");
                 Plc.TcAds.DeleteVariableHandle(eCommandHandle);
                 Plc.TcAds.DeleteVariableHandle(fVelocityHandle);
                 Plc.TcAds.DeleteVariableHandle(fPositionHandle);

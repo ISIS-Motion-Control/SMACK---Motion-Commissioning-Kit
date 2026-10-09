@@ -107,11 +107,30 @@ namespace TwinCat_Motion_ADS
             {
                 //Could check Run/Stop/Invalid status of this
                 AdsState = TcAds.ReadState().AdsState;
+                if (AdsState == AdsState.Invalid)
+                    Console.WriteLine($"ADS port {Port} answered but reported state Invalid (port not created?)");
                 return AdsState;
             }
-            catch (Exception ex)
+            catch (AdsErrorException ex)
             {
                 System.Diagnostics.Debug.WriteLine($"ReadState failed: {ex}");
+                switch (ex.ErrorCode)
+                {
+                    case AdsErrorCode.TargetPortNotFound:    // 6
+                        Console.WriteLine($"Route OK but nothing is listening on ADS port {Port} (PLC runtime not running?)"); break;
+                    case AdsErrorCode.TargetMachineNotFound: // 7
+                        Console.WriteLine("No route to target (check AMS Net ID and routes)"); break;
+                    case AdsErrorCode.ClientSyncTimeOut:     // 1861
+                        Console.WriteLine("Target didn't respond (offline, network or firewall?)"); break;
+                    default:
+                        Console.WriteLine($"ReadState failed: {ex.ErrorCode}"); break;
+                }
+                return AdsState.Invalid;
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ReadState failed: {ex}");
+                Console.WriteLine($"ReadState failed: {ex.GetType().Name}: {ex.Message}");
                 return AdsState.Invalid;
             }
         }
@@ -129,14 +148,6 @@ namespace TwinCat_Motion_ADS
             {
                 return false;
             }
-        }
-
-        public AdsState setupPLC()
-        {
-            if (checkConnection())
-            { Console.WriteLine("Port open"); };
-            //Connect();
-            return checkAdsState();            
         }
     }
 }

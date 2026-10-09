@@ -78,13 +78,8 @@ namespace TwinCat_Motion_ADS
             if (!string.IsNullOrEmpty(AmsNetID))
             {
                 Plc = new PLC(AmsNetID, 852); 
-                Plc.setupPLC();
-                if (Plc.AdsState == AdsState.Invalid)
-                {
-                    Console.WriteLine("Ads state is invalid");
-
-                }
-                else if (Plc.AdsState == AdsState.Stop)
+                Plc.checkAdsState();
+                if (Plc.AdsState == AdsState.Stop)
                 {
                     Console.WriteLine("Device connected but PLC not running");
 
