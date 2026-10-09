@@ -1821,7 +1821,7 @@ namespace TwinCat_Motion_ADS
        
         public string GenerateSettingsPath(NcTestSettings ts)
         {
-            return GenerateTestFileName(ts) + ".xml";
+            return GenerateTestFileName(ts) + "_Test_Settings.xml";
         }
 
         public void StartCSV(string fp, MeasurementDevices md)
