@@ -2,169 +2,124 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"       
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:local="clr-namespace:TwinCat_Motion_ADS"
         mc:Ignorable="d"
-        Title="S.M.A.C.K" WindowState="Maximized" Icon="ImageAssets/ibexHead.jpg" WindowStartupLocation="CenterScreen"
-        ResizeMode="CanResize"
-        Name="myMainWindow"
-        Width="1920"
-        Height="1000"      
-        Background="Transparent" Closing="Window_Closing">
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="btv" />
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Title="S.M.A.C.K" Icon="ImageAssets/ibexHead.jpg"
+        WindowState="Normal" WindowStartupLocation="CenterScreen" ResizeMode="CanResize"
+        Name="myMainWindow" Width="1120" Height="760" MinWidth="780" MinHeight="570"
+        Background="{StaticResource Smack.Bg}"
+        Closing="Window_Closing">
 
-        <!-- style a top level menu item -->
-        <ControlTemplate x:Key="VsMenuTop" TargetType="MenuItem">
-            <StackPanel TextBlock.FontSize="15px" Height="40">
-                <!-- label, icons, etc. -->
-                <Label Content="{TemplateBinding Header}" Margin="5" Foreground="White" />
+    <Grid x:Name="mainWindowGrid" Focusable="True" Background="{StaticResource Smack.Bg}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-                <!-- sub items -->
-                <Popup IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False">
-                    <Border BorderThickness="1" Background="White" BorderBrush="#E0E0E0">
-                        <StackPanel IsItemsHost="True" />
-                    </Border>
-                </Popup>
-                <StackPanel.Style>
-                    <Style TargetType="StackPanel">
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"  Value="True">
-                                <Setter Property="Background" Value="#106EBE" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </StackPanel.Style>
-            </StackPanel>
-        </ControlTemplate>
+        <!-- ================= Sidebar ================= -->
+        <Border Background="{StaticResource Smack.Surface}" BorderBrush="{StaticResource Smack.Border}" BorderThickness="0,0,1,0">
+            <DockPanel Margin="9,14,9,10" LastChildFill="False">
+                <StackPanel DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal" Margin="10,0,0,8">
+                        <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{StaticResource Smack.Accent}" VerticalAlignment="Center"/>
+                        <TextBlock Text="S.M.A.C.K" FontSize="16" FontWeight="Bold" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
 
-        <!-- style a non-top level menu item -->
-        <ControlTemplate x:Key="VsMenuSub" TargetType="MenuItem">
-            <DockPanel TextBlock.FontSize="15px" x:Name="panel">
-                <!-- label, icons, etc. -->
-                <Image Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" Width="20" Margin="5,0" />
-                <Label Content="{TemplateBinding Header}" Foreground="Black" Margin="0,5,5,5" />
+                    <TextBlock Text="MOTION" Style="{StaticResource NavHeader}"/>
+                    <RadioButton x:Name="NcAxis" Content="NC axis" Tag="&#xE713;" GroupName="pages" IsChecked="True" Style="{StaticResource NavItem}" Click="RadioButton_Click"/>
+                    <RadioButton x:Name="AirAxis" Content="Air axis" Tag="&#xE7BC;" GroupName="pages" Style="{StaticResource NavItem}" Click="RadioButton_Click"/>
 
-                <!-- draw the right arrow only if this menu item has sub items -->
-                <Image Source="icon_right.png" Visibility="{Binding HasItems, Converter={StaticResource btv}, RelativeSource={RelativeSource TemplatedParent}}" />
-
-                <!-- sub items -->
-                <Popup IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" Placement="Right" >
-                    <Border BorderThickness="1" Background="White" BorderBrush="#E0E0E0">
-                        <StackPanel IsItemsHost="True" />
-                    </Border>
-                </Popup>
-            </DockPanel>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsHighlighted" Value="True">
-                    <Setter Property="Background" TargetName="panel" Value="#EFF6FC" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-
-        <!-- style the separator -->
-        <ControlTemplate x:Key="VsMenuSep" TargetType="Separator">
-            <Border Height="1" Background="#E0E0E0" />
-        </ControlTemplate>
-
-        <!-- style the VSOnline -->
-        <ControlTemplate x:Key="VsOnline" TargetType="MenuItem">
-            <Border BorderThickness="1,0,1,0" Background="White" BorderBrush="#E0E0E0">
-                <StackPanel Height="50" Orientation="Horizontal" Background="#005A9E" x:Name="sPanel" >
-                    <Label Content="{TemplateBinding Header}" Margin="5,0,0,0" Foreground="White" FontSize="18" />
-
-                    <!-- sub items -->
-                    <Popup IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False">
-                        <Border BorderThickness="1" Background="White" BorderBrush="#E0E0E0">
-                            <StackPanel IsItemsHost="True" />
-                        </Border>
-                    </Popup>
+                    <TextBlock Text="TOOLS" Style="{StaticResource NavHeader}"/>
+                    <Button x:Name="DevicesButton" Content="Devices" Tag="&#xE770;" Style="{StaticResource NavButton}" Click="MeasureDevicesMenu_Click">
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="MeasureDevicesMenu" Placement="Right">
+                                <MenuItem Header="Add new device..." Click="AddNewDevice"/>
+                                <MenuItem Header="Import devices..." Click="ImportDevices_Click"/>
+                                <MenuItem Header="Export devices..." Click="ExportDevices_Click"/>
+                                <Separator/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                    <RadioButton x:Name="CsvHelper" Content="CSV helper" Tag="&#xE9D9;" GroupName="pages" Style="{StaticResource NavItem}" Click="RadioButton_Click"/>
+                    <Button x:Name="TestSuiteMenu" Content="Test suite" Tag="&#xE9D5;" Style="{StaticResource NavButton}" Click="TestSuiteMenu_Click"/>
                 </StackPanel>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsHighlighted" Value="True">
-                    <Setter Property="Background" TargetName="sPanel" Value="#5c8ddb" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
 
-        <!-- some base stuff -->
-        <Style TargetType="Menu">
-            <Setter Property="Background" Value="#0078D7" />
-            <Setter Property="Height" Value="40px" />
-        </Style>
+                <StackPanel DockPanel.Dock="Bottom">
+                    <RadioButton x:Name="SettingsScreen" Content="Settings" Tag="&#xE713;" GroupName="pages" Style="{StaticResource NavItem}" Click="RadioButton_Click"/>
+                    <Button x:Name="HelpMenu" Content="Help" Tag="&#xE897;" Style="{StaticResource NavButton}" Click="HelpMenu_Click"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
 
-    </Window.Resources>
-
-    <Border CornerRadius="10" Background="#FF9FC1C9" Focusable="True">
-        <Grid x:Name="mainWindowGrid" Focusable="True" SizeChanged="MainGrid_SizeChanged">
-            <Grid.LayoutTransform>
-                <ScaleTransform x:Name="ApplicationScaleTransform"
-                        CenterX="0"
-                        CenterY="0"
-                        ScaleX="{Binding ElementName=myMainWindow, Path=ScaleValue}"
-                        ScaleY="{Binding ElementName=myMainWindow, Path=ScaleValue}" />
-            </Grid.LayoutTransform>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1100*"/>
-                <ColumnDefinition Width="820*"/>
-            </Grid.ColumnDefinitions>
+        <!-- ================= Content ================= -->
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Border Background="#005A9E" Grid.Row="0" Grid.ColumnSpan="2"/>
-            <Border Background="#719db0" Grid.Row="1" Grid.ColumnSpan="2"/>
-            <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
-                  HorizontalAlignment="Left" Height="40" Background="{x:Null}">
-                <MenuItem x:Name="MeasureDevicesMenu" Header="Measurement Devices" Height="40" Width="220" Template="{StaticResource VsOnline}" Click="MeasureDevicesMenu_Click">
-                    <MenuItem Header="Add new device..." Click="AddNewDevice" Template="{StaticResource VsMenuSub}"/>
-                    <MenuItem Header="Import devices..." Click="ImportDevices_Click" Template="{StaticResource VsMenuSub}"/>
-                    <MenuItem Header="Export devices..." Click="ExportDevices_Click" Template="{StaticResource VsMenuSub}"/>
-                    <Separator/>
-                </MenuItem>
-                <MenuItem x:Name="TestSuiteMenu" Header="Test Suite" Height="40" Width="220" Template="{StaticResource VsOnline}" Click="TestSuiteMenu_Click"/>
-                <MenuItem x:Name="HelpMenu" Header="Help" Height="40" Width="220" Template="{StaticResource VsOnline}" Click="HelpMenu_Click"/>
-            </Menu>
-            <!-- Tabbed view selection -->
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-                <RadioButton x:Name="NcAxis" Content="NC Axis" Foreground="White"   Style="{StaticResource MenuButtonTheme}" IsChecked="True" Click="RadioButton_Click"/>
-                <RadioButton x:Name="AirAxis" Content="Air Axis" Foreground="White"   Style="{StaticResource MenuButtonTheme}" Click="RadioButton_Click"/>
-                <RadioButton x:Name="CsvHelper" Content="CSV Helper" Foreground="White"   Style="{StaticResource MenuButtonTheme}" Click="RadioButton_Click"/>
-                <RadioButton x:Name="SettingsScreen" Content="Settings" Foreground="White"   Style="{StaticResource MenuButtonTheme}" Click="RadioButton_Click"/>
-            </StackPanel>
-            
 
-            <!-- Content control window -->
-            <StackPanel x:Name="StackPanel___MainWindow" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="1" Margin="0,0,0,0" Grid.RowSpan="1" Focusable="True">
-                <ContentControl x:Name="tabbedWindow" d:IsHidden="True" HorizontalAlignment="left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-            </StackPanel>
-            
-            <!-- Console List Box -->
-            <ListBox x:Name="consoleListBox"  local:ListBoxBehavior.ScrollOnNewItem="True" Margin="5" ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Background="#121212" Foreground="White" >
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="560"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="20"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding statusMessage}" />
-                            <TextBlock Grid.Column="1" Text="{Binding timestamp}" Margin="20,0,0,0" TextAlignment="Right"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <!-- Header: page title + PLC status -->
+            <Grid Margin="16,12,16,5">
+                <TextBlock Text="{Binding PageTitle}" FontSize="19" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <Border HorizontalAlignment="Right" CornerRadius="12" Padding="10,4">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{StaticResource Smack.DangerSoft}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPlcConnected}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource Smack.OkSoft}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="8" Height="8" Margin="0,0,7,0" VerticalAlignment="Center">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="{StaticResource Smack.Danger}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPlcConnected}" Value="True">
+                                            <Setter Property="Fill" Value="{StaticResource Smack.Ok}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock FontSize="12.5" FontWeight="SemiBold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="PLC not connected"/>
+                                    <Setter Property="Foreground" Value="{StaticResource Smack.Danger}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPlcConnected}" Value="True">
+                                            <Setter Property="Text" Value="{Binding AmsNetID, StringFormat='PLC connected · {0}:852'}"/>
+                                            <Setter Property="Foreground" Value="{StaticResource Smack.Ok}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </Grid>
 
-            <Button x:Name="clearScreenButton2" Grid.Row="4" Grid.Column="1" Focusable="False" Content="Clear Screen" Click="clearScreenButton_Click" Height="20" FontSize="16" VerticalAlignment="Top" Margin="5,5,0,0" Style="{StaticResource myDefaultButton}"/>
+            <!-- Page host -->
+            <ContentControl x:Name="tabbedWindow" Grid.Row="1" Margin="16,3,16,8"
+                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
-
+            <!-- Console -->
+            <Border Grid.Row="2" Margin="16,0,16,12" Height="202" CornerRadius="10" Background="{StaticResource Smack.Console}">
+                <Grid>
+                    <ListBox x:Name="consoleListBox" local:ListBoxBehavior.ScrollOnNewItem="True"
+                             Style="{StaticResource ConsoleListBox}" ItemTemplate="{StaticResource ConsoleItemTemplate}"/>
+                    <Button x:Name="clearScreenButton2" Content="Clear" Click="clearScreenButton_Click"
+                            Style="{StaticResource ConsoleClearButton}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,18,0"/>
+                </Grid>
+            </Border>
         </Grid>
-    </Border>
+    </Grid>
 </Window>

@@ -1,33 +1,42 @@
 ﻿<UserControl x:Class="TwinCat_Motion_ADS.SettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:TwinCat_Motion_ADS"
-             mc:Ignorable="d" 
-             d:DesignHeight="890" d:DesignWidth="1100">
-    <Grid x:Name="settingsWindowGrid" Margin="0" Focusable="True">
-        <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top">
-                <local:SettingControlMainWindow x:Name="SettingAmsNetId" SetName="AMS NET ID:" BoxWidth="300" TextWidth="200"/>
-                <Button x:Name="connect2PlcButton" Focusable="False" Content="Connect to PLC" Click="ConnectToPlc_Click" Height="30" FontSize="16" Style="{StaticResource myDefaultButton}" Margin="0" VerticalAlignment="Center"/>
-                <local:SettingControlMainWindow x:Name="SettingPortID" SetName="Port ID:" BoxWidth="50" TextWidth="200" IsEnabled="False" SetValue="852"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Height="40" VerticalAlignment="Top">
-                <local:SettingControlMainWindow x:Name="SettingXl80Path" SetName="XL80 Exe Path:" BoxWidth="400" TextWidth="200"/>
-                <Button x:Name="selectXl80Path" Focusable="False" Content="Select file" Click="selectXl80Path_Click" Height="30" FontSize="16" Style="{StaticResource myDefaultButton}" Margin="0" VerticalAlignment="Center"/>
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="To connect to an XL80, uncompress the folder included in the git repository that contains the published XL80 exe file. Then from this screen select that exe file." Foreground="White"/>
-            </StackPanel>
+             mc:Ignorable="d" d:DesignHeight="540" d:DesignWidth="960">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="settingsWindowGrid" MinWidth="530" MaxWidth="790" HorizontalAlignment="Left">
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="PLC connection" Style="{StaticResource SectionTitle}"/>
+                    <TextBlock Text="Configure the ADS address of the TwinCAT PLC runtime." Style="{StaticResource MutedText}" Margin="0,5,0,14"/>
+                    <Grid Grid.IsSharedSizeScope="True">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <local:SettingControlMainWindow x:Name="SettingAmsNetId" SetName="AMS Net ID" BoxWidth="0" Width="265" HorizontalAlignment="Left"/>
+                        <Button Grid.Column="1" x:Name="connect2PlcButton" Content="Connect to PLC" Click="ConnectToPlc_Click"
+                                Style="{StaticResource SmackPrimaryButton}" MinWidth="138" Margin="12,3,0,3"/>
+                    </Grid>
+                    <local:SettingControlMainWindow x:Name="SettingPortID" SetName="Port" BoxWidth="0" Width="150"
+                                                    HorizontalAlignment="Left" IsEnabled="False" SetValue="852" Grid.IsSharedSizeScope="True"/>
+                    <TextBlock Text="ADS port 852 is fixed for this application's PLC connection."
+                               Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Measurement tools" Style="{StaticResource SectionTitle}"/>
+                    <TextBlock Text="Set the location of the Renishaw XL80 executable." Style="{StaticResource MutedText}" Margin="0,5,0,14"/>
+                    <Grid Grid.IsSharedSizeScope="True">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <local:SettingControlMainWindow x:Name="SettingXl80Path" SetName="XL80 exe path" BoxWidth="280"/>
+                        <Button Grid.Column="1" x:Name="selectXl80Path" Content="Browse..." Click="selectXl80Path_Click"
+                                Style="{StaticResource SmackButton}" MinWidth="100" Margin="12,3,0,3"/>
+                    </Grid>
+                    <TextBlock Text="Extract the published XL80 application from the repository, then browse to its .exe file."
+                               Foreground="{StaticResource Smack.TextMuted}" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
-        
-
-
-
-
-
-
-
-    </Grid>
+    </ScrollViewer>
 </UserControl>

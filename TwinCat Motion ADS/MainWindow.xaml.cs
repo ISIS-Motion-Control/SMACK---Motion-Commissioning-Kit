@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using TwinCat_Motion_ADS.MeasurementDevice;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Controls.Primitives;
 
 namespace TwinCat_Motion_ADS
 {
@@ -29,7 +30,7 @@ namespace TwinCat_Motion_ADS
 
         public MeasurementDevices MeasurementDevices = new();
         public List<MenuItem> measurementMenuItems = new();
-        
+
         ListBoxWriter lbw;
         public ObservableCollection<ListBoxStatusItem> consoleStringList = new();
 
@@ -44,6 +45,13 @@ namespace TwinCat_Motion_ADS
                 OnPropertyChanged();
                 Properties.Settings.Default.Save();
             }
+        }
+
+        private string _pageTitle = "NC axis";
+        public string PageTitle
+        {
+            get { return _pageTitle; }
+            set { _pageTitle = value; OnPropertyChanged(); }
         }
 
         private bool _startupComplete = false;
@@ -66,18 +74,18 @@ namespace TwinCat_Motion_ADS
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
 
             lbw = new(consoleListBox);
             consoleListBox.ItemsSource = consoleStringList;
             Console.SetOut(lbw);
 
             AmsNetID = Properties.Settings.Default.amsNetID;
-            SetupBinds();
             UpdateSettingsFlash();
             UpdateNcAxisFlash();
             if (!string.IsNullOrEmpty(AmsNetID))
             {
-                Plc = new PLC(AmsNetID, 852); 
+                Plc = new PLC(AmsNetID, 852);
                 Plc.checkAdsState();
                 if (Plc.AdsState == AdsState.Stop)
                 {
@@ -105,12 +113,12 @@ namespace TwinCat_Motion_ADS
         {
             if (flashing)
             {
-                var brush = new SolidColorBrush(Colors.Red);
+                var brush = new SolidColorBrush(Color.FromRgb(0xF4, 0xB6, 0xB0));
                 target.Background = brush;
                 var animation = new ColorAnimation
                 {
-                    From = Colors.Red,
-                    To = Colors.DarkRed,
+                    From = Color.FromRgb(0xF4, 0xB6, 0xB0),
+                    To = Color.FromRgb(0xE5, 0x73, 0x6B),
                     Duration = TimeSpan.FromSeconds(1.0),
                     AutoReverse = true,
                     RepeatBehavior = RepeatBehavior.Forever
@@ -134,71 +142,24 @@ namespace TwinCat_Motion_ADS
             SetFlashing(NcAxis, IsPlcConnected);
         }
 
-        #region ScaleValue Depdency Property
-        public static readonly DependencyProperty ScaleValueProperty = DependencyProperty.Register("ScaleValue", typeof(double), typeof(MainWindow), new UIPropertyMetadata(1.0, new PropertyChangedCallback(OnScaleValueChanged), new CoerceValueCallback(OnCoerceScaleValue)));
-
-        private static object OnCoerceScaleValue(DependencyObject o, object value)
-        {
-            MainWindow mainWindow = o as MainWindow;
-            if (mainWindow != null)
-                return mainWindow.OnCoerceScaleValue((double)value);
-            else return value;
-        }
-
-        private static void OnScaleValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-        {
-            MainWindow mainWindow = o as MainWindow;
-            if (mainWindow != null)
-                mainWindow.OnScaleValueChanged((double)e.OldValue, (double)e.NewValue);
-        }
-
-        protected virtual double OnCoerceScaleValue(double value)
-        {
-            if (double.IsNaN(value))
-                return 1.0f;
-
-            value = Math.Max(0.1, value);
-            return value;
-        }
-
-        protected virtual void OnScaleValueChanged(double oldValue, double newValue) { }
-
-        public double ScaleValue
-        {
-            get => (double)GetValue(ScaleValueProperty);
-            set => SetValue(ScaleValueProperty, value);
-        }
-        #endregion
-
         #region Window methods
-        private void MainGrid_SizeChanged(object sender, EventArgs e) => CalculateScale();
-
-        private void CalculateScale()
-        {
-            double yScale = ActualHeight / 1000f;
-            double xScale = ActualWidth / 1920f;
-            double value = Math.Min(xScale, yScale);
-
-            ScaleValue = (double)OnCoerceScaleValue(myMainWindow, value);
-        }
-
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            Plc?.Dispose();
-            if (NcAxisView.testAxis != null)
+            if (NcAxisView?.testAxis?.testRunning == true || AirAxisView?.TestRunning == true)
             {
-                if (NcAxisView.testAxis.testRunning)
+                MessageBoxResult dialogResult = MessageBox.Show(
+                    "A motion test is running. Close the application anyway?",
+                    "Test in progress", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (dialogResult == MessageBoxResult.No)
                 {
-                    MessageBoxResult dialogResult = MessageBox.Show("You have a test running do you want to exit?", "Please Don't Leave Me", MessageBoxButton.YesNo);
-                    if (dialogResult == MessageBoxResult.No)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
+                    e.Cancel = true;
+                    return;
                 }
             }
             //bit of a 'hacky' method. Due to the test suite window being hidden and not actually closed I need a way for that window to check if the whole application is closing
             windowClosing = true;
+            AirAxisView?.pneumaticAxis?.StopReading();
+            Plc?.Dispose();
             //Because I hide the window
             if (TestSuiteWindow != null)
             {
@@ -262,7 +223,6 @@ namespace TwinCat_Motion_ADS
 
 
             newMenuItem.Click += new RoutedEventHandler(DeviceMenu_Click);
-            newMenuItem.Template = (ControlTemplate)FindResource("VsMenuSub");
             MeasureDevicesMenu.Items.Add(newMenuItem);  //adding to the actual UI
             measurementMenuItems.Add(newMenuItem);      //Adding to internal list
 
@@ -309,6 +269,9 @@ namespace TwinCat_Motion_ADS
                 mi.Header = MeasurementDevices.MeasurementDeviceList[counter].Name;
                 counter++;
             }
+            MeasureDevicesMenu.PlacementTarget = DevicesButton;
+            MeasureDevicesMenu.Placement = PlacementMode.Right;
+            MeasureDevicesMenu.IsOpen = true;
         }
 
 
@@ -326,14 +289,9 @@ namespace TwinCat_Motion_ADS
         }
         #endregion
 
-        private void SetupBinds()
-        {
-            Binding amsNetBinding = new();
-            amsNetBinding.Source = this;
-            amsNetBinding.Path = new PropertyPath("AmsNetID"); ;
-            amsNetBinding.Mode = BindingMode.TwoWay;
-            amsNetBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-        }
+        // The AMS address is owned by MainWindow and exposed via INotifyPropertyChanged.
+        // No separate manual binding is required; the header binds directly to this property.
+
 
 
         private void TestSuiteMenu_Click(object sender, RoutedEventArgs e)
@@ -347,25 +305,29 @@ namespace TwinCat_Motion_ADS
 
         private void RadioButton_Click(object sender, RoutedEventArgs e)
         {
-            if(((RadioButton)sender) == NcAxis)
+            if (((RadioButton)sender) == NcAxis)
             {
                 tabbedWindow.Content = NcAxisView;
+                PageTitle = "NC axis";
                 SetFlashing(NcAxis, false);
             }
-            else if(((RadioButton)sender)== AirAxis)
+            else if (((RadioButton)sender) == AirAxis)
             {
                 tabbedWindow.Content = AirAxisView;
+                PageTitle = "Air axis";
             }
-            else if(((RadioButton)sender)== CsvHelper)
+            else if (((RadioButton)sender) == CsvHelper)
             {
                 tabbedWindow.Content = CsvHelperView;
+                PageTitle = "CSV helper";
             }
             else if (((RadioButton)sender) == SettingsScreen)
             {
                 tabbedWindow.Content = SettingsView;
+                PageTitle = "Settings";
             }
         }
-        
+
         private void clearScreenButton_Click(object sender, RoutedEventArgs e)
         {
             consoleStringList.Clear();
@@ -379,10 +341,10 @@ namespace TwinCat_Motion_ADS
 
         private void HelpMenu_Click(object sender, RoutedEventArgs e)
         {
-            HelpWindow = new();
-
-            
+            if (HelpWindow == null || !HelpWindow.IsLoaded)
+                HelpWindow = new HelpWindow();
             HelpWindow.Show();
+            HelpWindow.Activate();
         }
     }
 }

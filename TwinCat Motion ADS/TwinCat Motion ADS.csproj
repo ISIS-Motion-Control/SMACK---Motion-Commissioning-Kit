@@ -1,131 +1,132 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-    <RootNamespace>TwinCat_Motion_ADS</RootNamespace>
-    <UseWPF>true</UseWPF>
-    <ApplicationIcon />
-    <StartupObject />
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<RootNamespace>TwinCat_Motion_ADS</RootNamespace>
+		<UseWPF>true</UseWPF>
+		<ApplicationIcon />
+		<StartupObject />
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Fonts\**" />
-    <Compile Remove="Images\**" />
-    <Compile Remove="APPLICATION WINDOWS\Model\**" />
-    <EmbeddedResource Remove="Fonts\**" />
-    <EmbeddedResource Remove="Images\**" />
-    <EmbeddedResource Remove="APPLICATION WINDOWS\Model\**" />
-    <None Remove="Fonts\**" />
-    <None Remove="Images\**" />
-    <None Remove="APPLICATION WINDOWS\Model\**" />
-    <Page Remove="Fonts\**" />
-    <Page Remove="Images\**" />
-    <Page Remove="APPLICATION WINDOWS\Model\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Fonts\**" />
+		<Compile Remove="Images\**" />
+		<Compile Remove="APPLICATION WINDOWS\Model\**" />
+		<EmbeddedResource Remove="Fonts\**" />
+		<EmbeddedResource Remove="Images\**" />
+		<EmbeddedResource Remove="APPLICATION WINDOWS\Model\**" />
+		<None Remove="Fonts\**" />
+		<None Remove="Images\**" />
+		<None Remove="APPLICATION WINDOWS\Model\**" />
+		<Page Remove="Fonts\**" />
+		<Page Remove="Images\**" />
+		<Page Remove="APPLICATION WINDOWS\Model\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="APPLICATION WINDOWS\**" />
-    <None Remove="ImageAssets\**.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="APPLICATION WINDOWS\**" />
+		<None Remove="ImageAssets\**.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Beckhoff.TwinCAT.Ads" Version="7.0.292 " />
-    <PackageReference Include="CsvHelper" Version="27.1.1" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.516" />
-    <PackageReference Include="Nito.AsyncEx.Context" Version="5.1.2" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
-    <PackageReference Include="System.IO.Ports" Version="5.0.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Beckhoff.TwinCAT.Ads" Version="7.0.292 " />
+		<PackageReference Include="CsvHelper" Version="27.1.1" />
+		<PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.516" />
+		<PackageReference Include="ModernWpfUI" Version="0.9.6" />
+		<PackageReference Include="Nito.AsyncEx.Context" Version="5.1.2" />
+		<PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
+		<PackageReference Include="System.IO.Ports" Version="5.0.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="APPLICATION WINDOWS\Help screen windows\ImageAssets\**" />
-    <Resource Include="ImageAssets\**" />
-  </ItemGroup>	  
-	  
-  <ItemGroup>
-    <Compile Update="APPLICATION WINDOWS\EditLineWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="APPLICATION WINDOWS\AddStraightLineWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="APPLICATION WINDOWS\AddAdvDataColumnWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="APPLICATION WINDOWS\AddDataColumnWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="APPLICATION WINDOWS\HelpScreen_Unidirectional;.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="APPLICATION WINDOWS\measurementDeviceWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="APPLICATION WINDOWS\Help screen windows\ImageAssets\**" />
+		<Resource Include="ImageAssets\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="APPLICATION WINDOWS\EditLineWindow.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="APPLICATION WINDOWS\AddStraightLineWindow.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="APPLICATION WINDOWS\AddAdvDataColumnWindow.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="APPLICATION WINDOWS\AddDataColumnWindow.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="APPLICATION WINDOWS\HelpScreen_Unidirectional;.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="APPLICATION WINDOWS\measurementDeviceWindow.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="APPLICATION WINDOWS\EditLineWindow.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\AddStraightLineWindow.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\AddAdvDataColumnWindow.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\AddDataColumnWindow.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\Help screen windows\HelpScreen_Backlash.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\Help screen windows\HelpScreen_Scaling.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\Help screen windows\HelpScreen_Bidirectional.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\HelpScreen_Unidirectional;.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\measurementDeviceWindow.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\CsvHelperView.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\User Controls\ReadbackControlMainWindow.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="APPLICATION WINDOWS\User Controls\SettingControlMainWindow.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="Properties\Settings.settings">
+			<Generator>PublicSettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Renishaw References\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="APPLICATION WINDOWS\EditLineWindow.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\AddStraightLineWindow.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\AddAdvDataColumnWindow.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\AddDataColumnWindow.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\Help screen windows\HelpScreen_Backlash.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\Help screen windows\HelpScreen_Scaling.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\Help screen windows\HelpScreen_Bidirectional.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\HelpScreen_Unidirectional;.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\measurementDeviceWindow.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\CsvHelperView.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\User Controls\ReadbackControlMainWindow.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Update="APPLICATION WINDOWS\User Controls\SettingControlMainWindow.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Renishaw References\" />
+	</ItemGroup>
 
 </Project>

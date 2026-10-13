@@ -219,11 +219,34 @@ namespace TwinCat_Motion_ADS
             return true;
         }
 
+        // Check cancellation between moves and during delays. A running cylinder
+        // operation is allowed to finish; cancellation is not a safety stop.
+        private async Task<bool> WaitForTestStepAsync(TimeSpan delay)
+        {
+            var remaining = delay;
+            while (remaining > TimeSpan.Zero || PauseTest)
+            {
+                if (CancelTest) return false;
+                if (PauseTest)
+                {
+                    await Task.Delay(100);
+                    continue;
+                }
+                var slice = remaining > TimeSpan.FromMilliseconds(100)
+                    ? TimeSpan.FromMilliseconds(100) : remaining;
+                if (slice <= TimeSpan.Zero) break;
+                await Task.Delay(slice);
+                remaining -= slice;
+            }
+            return !CancelTest;
+        }
+
         public async Task<bool> End2EndTest(AirTestSettings ts, MeasurementDevices md =null)
         {
             Stopwatch testStopwatch = new();
             testStopwatch.Start();
-            //Start the test retracted
+            // Start retracted. The cancellation request is checked after each move.
+            if (!await WaitForTestStepAsync(TimeSpan.Zero)) return false;
             if (await RetractCylinderAndWait(ts.RetractTimeout.Val) == false)
             {
                 Console.WriteLine("TEST STATUS: Retract init failed");
@@ -243,10 +266,11 @@ namespace TwinCat_Motion_ADS
             {
 
                 Console.WriteLine("Starting test cycle " + i);
+                if (!await WaitForTestStepAsync(TimeSpan.Zero)) return false;
                 stopwatch.Reset();
 
                 //Wait the allotted delay time
-                await Task.Delay(TimeSpan.FromSeconds(ts.DelayAfterRetract.Val));
+                if (!await WaitForTestStepAsync(TimeSpan.FromSeconds(ts.DelayAfterRetract.Val))) return false;
                 stopwatch.Start();
                 if (await ExtendCylinderAndWait(ts.ExtendTimeout.Val) == false)
                 {
@@ -256,8 +280,10 @@ namespace TwinCat_Motion_ADS
                     return false;
                 }
                 stopwatch.Stop();
+                if (!await WaitForTestStepAsync(TimeSpan.Zero)) return false;
                 for (int j = 0; j < ts.SettlingReads.Val; j++)
                 {
+                    if (!await WaitForTestStepAsync(TimeSpan.Zero)) return false;
                     //do a read of DTIs (both should be in extend position)
                     //These will not be highly synchronised reads, very low "read rate".
 
@@ -269,11 +295,11 @@ namespace TwinCat_Motion_ADS
                     }
                     
                     
-                    await Task.Delay((int)ts.ReadDelayMs.Val);
+                    if (!await WaitForTestStepAsync(TimeSpan.FromMilliseconds(ts.ReadDelayMs.Val))) return false;
                 }
                 //Settling reads finished
                 //User delay before retracting cylinder
-                await Task.Delay(TimeSpan.FromSeconds(ts.DelayAfterExtend.Val));
+                if (!await WaitForTestStepAsync(TimeSpan.FromSeconds(ts.DelayAfterExtend.Val))) return false;
                 stopwatch.Reset();
                 stopwatch.Start();
                 if (await RetractCylinderAndWait(ts.RetractTimeout.Val) == false)
@@ -284,8 +310,10 @@ namespace TwinCat_Motion_ADS
                     return false;
                 }
                 stopwatch.Stop();
+                if (!await WaitForTestStepAsync(TimeSpan.Zero)) return false;
                 for (int j = 0; j < ts.SettlingReads.Val; j++)
                 {
+                    if (!await WaitForTestStepAsync(TimeSpan.Zero)) return false;
                     //do a read of DTIs (both should be in extend position)
                     //These will not be highly synchronised reads, very low "read rate".
 
@@ -297,7 +325,7 @@ namespace TwinCat_Motion_ADS
                     }
 
 
-                    await Task.Delay((int)ts.ReadDelayMs.Val);
+                    if (!await WaitForTestStepAsync(TimeSpan.FromMilliseconds(ts.ReadDelayMs.Val))) return false;
                 }
                 //Used to only one shot the read
                 /*PneumaticEnd2EndCSVv2 tmpCSVretract = new PneumaticEnd2EndCSVv2((uint)i, 0, "Retracting", ExtendedLimit, RetractedLimit, stopwatch.Elapsed);
@@ -318,6 +346,8 @@ namespace TwinCat_Motion_ADS
 
         private readonly CancellationTokenSource readToken1 = new();
 
+        public void StopReading() => readToken1.Cancel();
+
         public void ReadStatuses()
         {
             _ = Task.Run(() => ReadCylinder(readToken1.Token));
@@ -331,6 +361,7 @@ namespace TwinCat_Motion_ADS
                 if (!ValidCommand()) return;
                 var result = await Plc.TcAds.ReadAnyAsync<bool>(bCylinder_Handle, CancellationToken.None);
                 Cylinder = result.Value;
+                await Task.Delay(100);
             }
             Cylinder = false;
             return;
@@ -342,6 +373,7 @@ namespace TwinCat_Motion_ADS
                 if (!ValidCommand()) { return; }
                 TwinCAT.Ads.ResultValue<bool> result = await Plc.TcAds.ReadAnyAsync<bool>(bExtendedLimit_Handle, CancellationToken.None);
                 ExtendedLimit = result.Value;
+                await Task.Delay(100);
             }
             ExtendedLimit = false;
             return;
@@ -353,6 +385,7 @@ namespace TwinCat_Motion_ADS
                 if (!ValidCommand()) return;
                 var result = await Plc.TcAds.ReadAnyAsync<bool>(bRetractedLimit_Handle, CancellationToken.None);
                 RetractedLimit = result.Value;
+                await Task.Delay(100);
             }
             RetractedLimit = false;
             return;

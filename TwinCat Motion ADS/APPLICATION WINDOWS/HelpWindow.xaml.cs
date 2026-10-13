@@ -30,31 +30,32 @@ namespace TwinCat_Motion_ADS
         public HelpWindow()
         {
             InitializeComponent();
+            helpWindow.Content = helpScreen_AxisSetup;
         }
 
         private void MenuSelect_Click(object sender, RoutedEventArgs e)
         {
-            if(((MenuItem)sender) == EndToEnd)
+            if(((Button)sender) == EndToEnd)
             {
                 helpWindow.Content = helpScreen_EndToEnd;
             }
-            if (((MenuItem)sender) == Unidirectional)
+            if (((Button)sender) == Unidirectional)
             {
                 helpWindow.Content = helpScreen_Unidirectional;
             }
-            if (((MenuItem)sender) == Bidirectional)
+            if (((Button)sender) == Bidirectional)
             {
                 helpWindow.Content = helpScreen_Bidirectional;
             }
-            if (((MenuItem)sender) == Scaling)
+            if (((Button)sender) == Scaling)
             {
                 helpWindow.Content = helpScreen_Scaling;
             }
-            if (((MenuItem)sender) == Backlash)
+            if (((Button)sender) == Backlash)
             {
                 helpWindow.Content = helpScreen_Backlash;
             }
-            if (((MenuItem)sender) == AxisSetup)
+            if (((Button)sender) == AxisSetup)
             {
                 helpWindow.Content = helpScreen_AxisSetup;
             }

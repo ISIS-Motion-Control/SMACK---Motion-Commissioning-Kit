@@ -69,7 +69,8 @@ namespace TwinCat_Motion_ADS
             but.Content = butText;
             but.Width = 120;
             but.Margin = new Thickness(5);
-            but.Height = 20;
+            but.Height = 34;
+            but.Style = (Style)Application.Current.FindResource("SmackButton");
         }
 
         public static void SetupTextBlock(ref TextBlock tb, string tbText, int wd = 100)

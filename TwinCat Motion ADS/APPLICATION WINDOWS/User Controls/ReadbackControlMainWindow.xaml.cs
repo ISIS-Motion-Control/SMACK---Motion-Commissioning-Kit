@@ -18,6 +18,6 @@ namespace TwinCat_Motion_ADS
         public string SetName { get; set; }
         public int BoxWidth { get; set; } = 200;
         public string strTests { get; set; }
-        public int TextWidth { get; set; } = 220;
+        public int TextWidth { get; set; } = 0;
     }
 }

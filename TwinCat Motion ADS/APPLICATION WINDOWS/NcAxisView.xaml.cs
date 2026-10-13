@@ -52,7 +52,16 @@ namespace TwinCat_Motion_ADS
 
         private void InitialiseAxis_Click(object sender, RoutedEventArgs e)
         {
-            uint axisId = Convert.ToUInt32(NcTestSettings.AxisSelection.UiVal);
+            if (windowData.Plc == null || !windowData.IsPlcConnected)
+            {
+                Console.WriteLine("Connect to the PLC in Settings first.");
+                return;
+            }
+            if (!uint.TryParse(NcTestSettings.AxisSelection.UiVal, out uint axisId) || axisId == 0)
+            {
+                Console.WriteLine("Enter a valid NC axis number (1 or greater).");
+                return;
+            }
             if (testAxis == null)
             {
                 testAxis = new NcAxis(axisId, windowData.Plc);
@@ -262,8 +271,11 @@ namespace TwinCat_Motion_ADS
             ncWindowGrid.Focus();
         }
 
-        private async void EnableAxisControls(bool Enabled)
+        private void EnableAxisControls(bool Enabled)
         {
+            initAxis.IsEnabled = Enabled;
+            RunSelectedTestButton.IsEnabled = Enabled;
+            TestSelectionComboBox.IsEnabled = Enabled;
             AxisSelection.IsEnabled = Enabled;
             windowSetPoint.IsEnabled = Enabled;
             windowVelocity.IsEnabled = Enabled;
@@ -297,7 +309,9 @@ namespace TwinCat_Motion_ADS
             }
             EnableAxisControls(false);
             SetEnableOnUiElements(true);
-            switch(TestSelectionComboBox.SelectedItem)
+            try
+            {
+                switch(TestSelectionComboBox.SelectedItem)
             {
                 case TestTypes.EndToEnd:
                     if (await testAxis.LimitToLimitTestwithReversingSequence(NcTestSettings, windowData.MeasurementDevices))
@@ -355,8 +369,24 @@ namespace TwinCat_Motion_ADS
                 default:
                     break;
             }
-            EnableAxisControls(true);
-            SetEnableOnUiElements();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"NC test failed: {ex.Message}");
+            }
+            finally
+            {
+                EnableAxisControls(true);
+                SetEnableOnUiElements();
+            }
+
+        }
+        private void TestSelectionComboBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape && !TestSelectionComboBox.IsDropDownOpen)
+            {
+                e.Handled = true;
+            }
         }
 
         private void TestSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -1,126 +1,141 @@
 ﻿<UserControl x:Class="TwinCat_Motion_ADS.NcAxisView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:TwinCat_Motion_ADS"
-             mc:Ignorable="d" 
-             d:DesignHeight="890" d:DesignWidth="1100">
-    <Grid x:Name="ncWindowGrid" Margin="0" Focusable="True" MouseDown="ncWindowGrid_MouseDown">
-        <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <StackPanel x:Name="MAIN" Orientation="Vertical">
-                    <TextBlock Text="Axis Control" HorizontalAlignment="Center" Margin="0,0,0,2" FontSize="24"/>
-
-                    <!-- Initialise Axis -->
-                    <StackPanel x:Name="initAxisPanel" Orientation="Horizontal" Margin="5">
-                        <local:SettingControlMainWindow x:Name="AxisSelection" SetValue="0" BoxWidth="50" Width="50" LabelMargin="0,0,0,0" TextWidth="0"/>
-                        <Button x:Name="initAxis" Focusable="False" Content="initAxis" Click="InitialiseAxis_Click" Width="80" Style="{StaticResource myDefaultButton}" Margin="20,0,0,0" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="validAxis"  IsEnabled="False" Height="24" Width="180" HorizontalAlignment="Left" Margin="5,5,0,0" Style="{StaticResource checkBoxTheme}" Content="Axis Connection"/>
+             mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="980">
+    <UserControl.Resources>
+        <Style x:Key="SmackEnableButton" TargetType="Button" BasedOn="{StaticResource SmackButton}">
+            <Setter Property="Content" Value="Enable"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=enabledCheck}" Value="True">
+                    <Setter Property="Content" Value="Disable"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <!-- Equal-width parameter columns shrink with the window; scroll only when minimum usable width is reached. -->
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid x:Name="ncWindowGrid" MinWidth="650" Background="Transparent"
+              Focusable="True" MouseDown="ncWindowGrid_MouseDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="315"/>
+                <ColumnDefinition Width="*" MinWidth="325"/>
+            </Grid.ColumnDefinitions>
+            <!-- Axis control: controls directly retain the names and events used in NcAxisView.xaml.cs. -->
+            <Border Grid.Column="0" Style="{StaticResource Card}" VerticalAlignment="Top">
+                <StackPanel Grid.IsSharedSizeScope="True">
+                    <Grid>
+                        <TextBlock Text="Axis control" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <CheckBox x:Name="validAxis" Content="Linked" Style="{StaticResource StatusChip}"/>
+                            <local:ReadbackControlMainWindow x:Name="currentAxisReadback" SetName="Axis" SetValue="0" BoxWidth="15"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <local:SettingControlMainWindow x:Name="AxisSelection" SetName="Axis" SetValue="1" BoxWidth="70"/>
+                        <Button x:Name="initAxis" Grid.Column="1" Content="Init" Click="InitialiseAxis_Click"
+                                Style="{StaticResource SmackButton}" Margin="8,3,0,3" MinWidth="65"/>
+                    </Grid>
+                    <local:ReadbackControlMainWindow x:Name="positionReadback" SetName="Position" SetValue="0" BoxWidth="90"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,6">
+                        <CheckBox x:Name="enabledCheck" Content="Enabled" Style="{StaticResource StatusChip}"/>
+                        <CheckBox x:Name="fwEnabledCheck" Content="Fw" Style="{StaticResource StatusChip}"/>
+                        <CheckBox x:Name="bwEnabledCheck" Content="Bw" Style="{StaticResource StatusChip}"/>
+                        <CheckBox x:Name="errorCheck" Content="Error" Style="{StaticResource ErrorChip}"/>
                     </StackPanel>
-
-                    <StackPanel x:Name="statusAndSettings" Orientation="Horizontal">
-                        <!-- Axis selection and readback-->
-                        <StackPanel Orientation="Vertical">
-                            <local:ReadbackControlMainWindow x:Name="currentAxisReadback" SetName="Sel. Axis:" SetValue="0" BoxWidth="100" TextWidth="100"/>
-                            <local:ReadbackControlMainWindow x:Name="positionReadback" SetName="Position:" SetValue="0" BoxWidth="100" TextWidth="100"/>
-                            <local:SettingControlMainWindow x:Name="windowSetPoint" SetName="Setpoint:" BoxWidth="100" TextWidth="100"/>
-                            <local:SettingControlMainWindow x:Name="windowVelocity" SetName="Velocity:" BoxWidth="100" TextWidth="100"/>
-                        </StackPanel>
-                        <!--Axis statuses-->
-                        <StackPanel Orientation="Vertical">
-                            <CheckBox x:Name="enabledCheck" IsEnabled="False" Height="24" Width="120" HorizontalAlignment="Left" Margin="0,5,0,0" Style="{StaticResource checkBoxTheme}" Content="Enabled"/>
-
-                            <CheckBox x:Name="fwEnabledCheck" IsEnabled="False" Height="24" Width="120" HorizontalAlignment="Left" Margin="0,5,0,0" Style="{StaticResource checkBoxTheme}" Content="FwEnabled"/>
-
-                            <CheckBox x:Name="bwEnabledCheck" IsEnabled="False" Width="120" Height="24" HorizontalAlignment="Left" Margin="0,5,0,0" Style="{StaticResource checkBoxTheme}" Content="BwEnabled"/>
-
-                            <CheckBox x:Name="errorCheck" IsEnabled="False" Width="120" Height="24" HorizontalAlignment="Left" Margin="0,5,0,0" Style="{StaticResource checkBoxTheme}" Content="Error"/>
-                        </StackPanel>
-                        <!--Axis enable and reset-->
-
-                    </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" Margin="15">
-                        <!--Column 1 buttons-->
-                        <StackPanel x:Name="BasicCommands1" Orientation="Vertical" >
-                            <Button x:Name="enableButton" Focusable="False" Content="Enable/Disable" Click="AxisCommand_Click" Margin="0,0,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <Button x:Name="moveAbsButton" Focusable="False" Content="MoveAbs" Click="AxisCommand_Click" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <Button x:Name="moveRelButton" Focusable="False" Content="MoveRel" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}" Click="AxisCommand_Click"/>
-                            <Button x:Name="moveVelButton" Focusable="False" Content="MoveVel" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}" Click="AxisCommand_Click"/>
-                            <Button x:Name="move2High" Focusable="False" Content="Move2HighLimit" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}" Click="AxisCommand_Click"/>
-                            <Button x:Name="move2Low" Focusable="False" Content="Move2LowLimit" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}" Click="AxisCommand_Click"/>
-                        </StackPanel>
-                        <!--Column 2 buttons-->
-                        <StackPanel x:Name="BasicCommands2" Margin="15,0,0,0">
-                            <Button x:Name="resetButton" Focusable="False" Content="Reset" Click="AxisCommand_Click" Margin="0,0,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <Button x:Name="stopMove" Focusable="False" Content="Stop" Click="AxisCommand_Click" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <Button x:Name="highLimReversal" Focusable="False" Content="HighLimReversal" Click="AxisCommand_Click" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <Button x:Name="lowLimReversal" Focusable="False" Content="LowLimReversal" Click="AxisCommand_Click" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <Button x:Name="homeButton" Focusable="False" Content="Home Axis" Click="AxisCommand_Click" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <TextBlock Text="Test Controls" HorizontalAlignment="Center" Margin="0,20,0,2" FontSize="24"/>
-                    <StackPanel Orientation="Horizontal" Margin="15,0,0,0">
-                        <ComboBox x:Name="TestSelectionComboBox" Width="270" SelectionChanged="TestSelectionComboBox_SelectionChanged" FontSize="24" ToolTip="More info about tests available in help"/>
-                        <Button x:Name="RunSelectedTestButton" Focusable="False" Content="Run" Click="RunSelectedTestButton_Click" Margin="5,0,0,0" Style="{StaticResource myBlueButton}" Width="100"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <!--Column 1-->
-                        <StackPanel x:Name="testButtons1" Margin="15,0,0,0">
-                            <Button x:Name="folderDirSelect" Focusable="False" Content="Select Directory" Click="SelectFolderDirectory_Click" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <Button x:Name="cancelTest" Focusable="False" Content="Cancel Test" Click="CancelTest_Click" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <CheckBox x:Name="testCancelledCheck" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Margin="5,5,0,0" Style="{StaticResource checkBoxTheme}" Content="Cancelled"/>
-
-                        </StackPanel>
-                        <!--Column 2-->
-                        <StackPanel x:Name="testButtons2" Margin="15,0,0,0">
-                            <Button x:Name="testButton" Focusable="False" Content="Import Settings" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}" Click="LoadSettingsFile_Click"/>
-                            <Button x:Name="pauseTest" Focusable="False" Content="Pause Test" Click="PauseTest_Click" Margin="0,10,0,0" Style="{StaticResource myDefaultButton}"/>
-                            <CheckBox x:Name="testPausedCheck" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Margin="5,5,0,0" Style="{StaticResource checkBoxTheme}" Content="Paused"/>
-
-
-                        </StackPanel>
-                    </StackPanel>
+                    <local:SettingControlMainWindow x:Name="windowSetPoint" SetName="Setpoint" BoxWidth="100"/>
+                    <local:SettingControlMainWindow x:Name="windowVelocity" SetName="Velocity" BoxWidth="100"/>
+                    <UniformGrid Columns="2" Margin="0,8,0,0">
+                        <Button x:Name="enableButton" Style="{StaticResource SmackEnableButton}" Click="AxisCommand_Click" Margin="0,0,4,6"/>
+                        <Button x:Name="resetButton" Content="Reset" Style="{StaticResource SmackButton}" Click="AxisCommand_Click" Margin="4,0,0,6"/>
+                        <Button x:Name="moveAbsButton" Content="Move abs" Style="{StaticResource SmackButton}" Click="AxisCommand_Click" Margin="0,0,4,6"/>
+                        <Button x:Name="stopMove" Content="Stop" Style="{StaticResource SmackDangerButton}" Click="AxisCommand_Click" Margin="4,0,0,6"/>
+                        <Button x:Name="moveRelButton" Content="Move rel" Style="{StaticResource SmackButton}" Click="AxisCommand_Click" Margin="0,0,4,6"/>
+                        <Button x:Name="moveVelButton" Content="Move vel" Style="{StaticResource SmackButton}" Click="AxisCommand_Click" Margin="4,0,0,6"/>
+                        <Button x:Name="move2High" Content="To high limit" Style="{StaticResource SmackButton}" Click="AxisCommand_Click" Margin="0,0,4,6"/>
+                        <Button x:Name="move2Low" Content="To low limit" Style="{StaticResource SmackButton}" Click="AxisCommand_Click" Margin="4,0,0,6"/>
+                    </UniformGrid>
+                    <Button x:Name="homeButton" Content="Home axis" Style="{StaticResource SmackButton}" Click="AxisCommand_Click"/>
+                    <!-- Limit reversal controls are always visible, not hidden behind an expander. -->
+                    <UniformGrid Columns="2" Margin="0,6,0,0">
+                        <Button x:Name="highLimReversal" Content="High reversal" ToolTip="High limit reversal"
+                                Style="{StaticResource SmackButton}" Click="AxisCommand_Click" Margin="0,0,4,0"/>
+                        <Button x:Name="lowLimReversal" Content="Low reversal" ToolTip="Low limit reversal"
+                                Style="{StaticResource SmackButton}" Click="AxisCommand_Click" Margin="4,0,0,0"/>
+                    </UniformGrid>
                 </StackPanel>
+            </Border>
 
+            <!-- The common test settings and execution controls are immediately visible. -->
+            <Border Grid.Column="1" Style="{StaticResource Card}" Margin="12,0,0,0" VerticalAlignment="Top">
+                <StackPanel Grid.IsSharedSizeScope="True">
+                    <TextBlock Text="Test parameters" Style="{StaticResource SectionTitle}"/>
+                    <!-- Five compact rows, three equally sized columns. No minimum box width. -->
+                    <UniformGrid Columns="3" Margin="0,6,0,1">
+                        <local:SettingControlMainWindow x:Name="SettingTitle" SetName="Title" BoxWidth="0" Compact="True" BoxToolTip="Name for this test" SetValue="New test" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingTimeout" SetName="Timeout (s)" BoxWidth="0" Compact="True" BoxToolTip="Maximum time to wait for a move" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingVelocity" SetName="Velocity" BoxWidth="0" Compact="True" BoxToolTip="Axis velocity for this test" Margin="0"/>
+                        <local:SettingControlMainWindow x:Name="SettingCycles" SetName="Cycles" BoxWidth="0" Compact="True" BoxToolTip="Number of test cycles" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingCycleDelay" SetName="Cycle delay (s)" BoxWidth="0" Compact="True" BoxToolTip="Wait between cycles" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingReversalVelocity" SetName="Reversal velocity" BoxWidth="0" Compact="True" BoxToolTip="Velocity when reversing off a limit" Margin="0"/>
+                        <local:SettingControlMainWindow x:Name="SettingReversalExtraSeconds" SetName="Extra reversal (s)" BoxWidth="0" Compact="True" BoxToolTip="Additional reversal time" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingReversalSettlingSeconds" SetName="Reversal settle (s)" BoxWidth="0" Compact="True" BoxToolTip="Wait after contacting the limit" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingReversalDistance" SetName="Reversal distance" BoxWidth="0" Compact="True" BoxToolTip="Run-up distance for backlash" Margin="0"/>
+                        <local:SettingControlMainWindow x:Name="SettingOvershootDistance" SetName="Overshoot distance" BoxWidth="0" Compact="True" BoxToolTip="Run-up distance at the return point" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingInitialSetpoint" SetName="Initial setpoint" BoxWidth="0" Compact="True" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingEndSetpoint" SetName="End setpoint" BoxWidth="0" Compact="True" Margin="0"/>
+                        <local:SettingControlMainWindow x:Name="SettingAccuracySteps" SetName="Steps in test" BoxWidth="0" Compact="True" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingStepSize" SetName="Step size" BoxWidth="0" Compact="True" Margin="0,0,6,0"/>
+                        <local:SettingControlMainWindow x:Name="SettingSettlingTime" SetName="Measure settle (s)" BoxWidth="0" Compact="True" Margin="0"/>
+                    </UniformGrid>
 
-
-                <StackPanel x:Name="testSettings" Margin="15,0,0,0">
-                    <TextBlock Text="Test Parameters" HorizontalAlignment="Center" Margin="0,0,0,2" FontSize="24"/>
-                    <local:SettingControlMainWindow x:Name="SettingTitle" SetName="Test Title:" SetValue="*New Test*" BoxWidth="320" BoxToolTip="Name for this test" />
-                    <local:SettingControlMainWindow x:Name="SettingTimeout" SetName="Timeout (s):" BoxWidth="120" BoxToolTip="Max time to wait for move before ending test"/>
-                    <local:SettingControlMainWindow x:Name="SettingVelocity" SetName="Velocity:" BoxWidth="120" BoxToolTip="Axis velocity for the test"/>
-                    <local:SettingControlMainWindow x:Name="SettingCycles" SetName="Cycles:" BoxWidth="120" strTests="" BoxToolTip="Number of times the test will repeat"/>
-                    <local:SettingControlMainWindow x:Name="SettingCycleDelay" SetName="Cycle Delay:" BoxWidth="120" strTests="" BoxToolTip="Time to wait between the cycles"/>
-                    <local:SettingControlMainWindow x:Name="SettingReversalVelocity" SetName="Rev. Velocity:" BoxWidth="120" strTests="" BoxToolTip="Speed for reversing off the limit and slow approach"/>
-                    <local:SettingControlMainWindow x:Name="SettingReversalExtraSeconds" SetName="Extra Rev. Time(s):" BoxWidth="120" strTests="" BoxToolTip="Time spent reversing off the limit before the slow approach"/>
-                    <local:SettingControlMainWindow x:Name="SettingReversalSettlingSeconds" SetName="Rev. Settling Time(s):" BoxWidth="120" strTests="" BoxToolTip="Time to wait after hitting limit for both initial and reversal"/>
-                    <local:SettingControlMainWindow x:Name="SettingInitialSetpoint" SetName="Initial Setpoint:" BoxWidth="120" strTests="" BoxToolTip="Starting position"/>
-                    <local:SettingControlMainWindow x:Name="SettingEndSetpoint" SetName="End Setpoint:" BoxWidth="120" BoxToolTip="Second position for scaling test"/>
-                    <local:SettingControlMainWindow x:Name="SettingAccuracySteps" SetName="Steps in test:" BoxWidth="120" strTests="" BoxToolTip="Number of measurement points"/>
-                    <local:SettingControlMainWindow x:Name="SettingStepSize" SetName="Step Size:" BoxWidth="120" strTests="" BoxToolTip="Distance between each measurement point"/>
-                    <local:SettingControlMainWindow x:Name="SettingSettlingTime" SetName="Measure settle time(s):" BoxWidth="120" strTests="" BoxToolTip="Pause before each measurement"/>
-                    <local:SettingControlMainWindow x:Name="SettingReversalDistance" SetName="Reversal Distance:" BoxWidth="120" strTests="" BoxToolTip="Run-up distance from the start point to remove backlash"/>
-                    <local:SettingControlMainWindow x:Name="SettingOvershootDistance" SetName="Overshoot Distance:" BoxWidth="120" strTests=""  BoxToolTip="Run-up distance from the return point to remove backlash"/>
-
-                    <ProgressBar x:Name="testProgressBar" Height="25" Width="400" Minimum="0" Maximum="1" Margin="0,20,0,0"/>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Estimated time remaining: " Height="25" Width="200" FontSize="16" Foreground="White" />
-                        <TextBlock x:Name="EstimateTime" Height="25" Width="200" FontSize="16" Foreground="White" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Estimated end time: " Height="25" Width="200" FontSize="16" Foreground="White" />
-                        <TextBlock x:Name="EstimateEndTime" Height="25" Width="200" FontSize="16" Foreground="White" />
-                    </StackPanel>
+                    <Border Height="1" Background="{StaticResource Smack.Border}" Margin="0,12,0,10"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="TestSelectionComboBox"
+                            Style="{StaticResource SmackComboBox}"
+                            SelectionChanged="TestSelectionComboBox_SelectionChanged"
+                            ToolTip="More info about tests available in help"
+                            PreviewKeyDown="TestSelectionComboBox_PreviewKeyDown"/>
+                        <Button x:Name="RunSelectedTestButton" Grid.Column="1" Content="▶ Run" Click="RunSelectedTestButton_Click"
+                                Style="{StaticResource SmackPrimaryButton}" MinWidth="82" Margin="6,0,0,0"/>
+                    </Grid>
+                    <!-- All four secondary test actions share a single responsive row. -->
+                    <UniformGrid Columns="4" Margin="0,7,0,0">
+                        <Button x:Name="pauseTest" Content="Pause" Click="PauseTest_Click" Style="{StaticResource SmackButton}" Margin="0,0,4,0" Padding="5,5"/>
+                        <Button x:Name="cancelTest" Content="Cancel" Click="CancelTest_Click" Style="{StaticResource SmackButton}" Margin="0,0,4,0" Padding="5,5"/>
+                        <Button x:Name="folderDirSelect" Content="Select" ToolTip="Select save directory" Click="SelectFolderDirectory_Click"
+                                Style="{StaticResource SmackButton}" Margin="0,0,4,0" Padding="5,5"/>
+                        <Button x:Name="testButton" Content="Import" ToolTip="Import test settings" Click="LoadSettingsFile_Click"
+                                Style="{StaticResource SmackButton}" Padding="5,5"/>
+                    </UniformGrid>
+                    <WrapPanel Margin="0,8,0,0">
+                        <CheckBox x:Name="testPausedCheck" Content="Paused" Style="{StaticResource StatusChip}"/>
+                        <CheckBox x:Name="testCancelledCheck" Content="Cancelled" Style="{StaticResource ErrorChip}"/>
+                    </WrapPanel>
+                    <ProgressBar x:Name="testProgressBar" Minimum="0" Maximum="1" Height="5" Margin="0,6,0,4"
+                                 Foreground="{StaticResource Smack.Accent}"/>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Remaining " Style="{StaticResource MutedText}"/>
+                            <TextBlock x:Name="EstimateTime" FontSize="12"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="Est. end " Style="{StaticResource MutedText}"/>
+                            <TextBlock x:Name="EstimateEndTime" FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
-            </StackPanel>
-        </StackPanel>
-
-
-
-
-
-
-    </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

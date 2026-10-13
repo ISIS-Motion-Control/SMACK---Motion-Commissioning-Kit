@@ -58,6 +58,11 @@ namespace TwinCat_Motion_ADS
 
         private void ConnectToPlc_Click(object sender, RoutedEventArgs e)
         {
+            if (windowData.NcAxisView?.testAxis?.testRunning == true || windowData.AirAxisView?.TestRunning == true)
+            {
+                Console.WriteLine("Wait for the active motion test to finish before reconnecting.");
+                return;
+            }
             Console.WriteLine("Connecting to PLC...");
             windowData.Plc?.Dispose();
             windowData.Plc = new PLC(AmsNetIdSetting.Val, 852);
@@ -69,8 +74,12 @@ namespace TwinCat_Motion_ADS
             else if (windowData.Plc.AdsState == AdsState.Run)
             {
                 Console.WriteLine("Device connected and running");
+                Console.WriteLine("Re-initialise any NC or air axes after changing the PLC connection.");
             }
             windowData.IsPlcConnected = windowData.Plc.AdsState != AdsState.Invalid;
+            // Keep the heading, saved configuration and connection target in sync.
+            windowData.AmsNetID = AmsNetIdSetting.Val;
+            
         }
 
         private void WindowData_PropertyChanged(object sender, PropertyChangedEventArgs e)
