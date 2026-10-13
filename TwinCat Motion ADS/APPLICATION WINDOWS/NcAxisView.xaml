@@ -111,8 +111,8 @@
                     </Grid>
                     <!-- All four secondary test actions share a single responsive row. -->
                     <UniformGrid Columns="4" Margin="0,7,0,0">
-                        <Button x:Name="pauseTest" Content="Pause" Click="PauseTest_Click" Style="{StaticResource SmackButton}" Margin="0,0,4,0" Padding="5,5"/>
-                        <Button x:Name="cancelTest" Content="Cancel" Click="CancelTest_Click" Style="{StaticResource SmackButton}" Margin="0,0,4,0" Padding="5,5"/>
+                        <Button x:Name="pauseTest" Content="Pause" Click="PauseTest_Click" Style="{StaticResource SmackButton}" Margin="0,0,4,0" Padding="5,5" IsEnabled="False"/>
+                        <Button x:Name="cancelTest" Content="Cancel" Click="CancelTest_Click" Style="{StaticResource SmackButton}" Margin="0,0,4,0" Padding="5,5" IsEnabled="False"/>
                         <Button x:Name="folderDirSelect" Content="Select" ToolTip="Select save directory" Click="SelectFolderDirectory_Click"
                                 Style="{StaticResource SmackButton}" Margin="0,0,4,0" Padding="5,5"/>
                         <Button x:Name="testButton" Content="Import" ToolTip="Import test settings" Click="LoadSettingsFile_Click"
@@ -120,7 +120,6 @@
                     </UniformGrid>
                     <WrapPanel Margin="0,8,0,0">
                         <CheckBox x:Name="testPausedCheck" Content="Paused" Style="{StaticResource StatusChip}"/>
-                        <CheckBox x:Name="testCancelledCheck" Content="Cancelled" Style="{StaticResource ErrorChip}"/>
                     </WrapPanel>
                     <ProgressBar x:Name="testProgressBar" Minimum="0" Maximum="1" Height="5" Margin="0,6,0,4"
                                  Foreground="{StaticResource Smack.Accent}"/>

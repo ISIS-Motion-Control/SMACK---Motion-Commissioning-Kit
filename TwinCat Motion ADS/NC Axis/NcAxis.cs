@@ -417,47 +417,29 @@ namespace TwinCat_Motion_ADS
 
         public async Task<bool> MoveRelativeAndWait(double position, double velocity, int timeout = 0)
         {
-            var timer = System.Diagnostics.Stopwatch.StartNew();
-
-            Console.WriteLine($"[MoveRel] Requested: Distance={position}, Velocity={velocity}, Done={Done}");
-
-            if (!newCommandIssued())
-            {
-                Console.WriteLine("[MoveRel] Rejected by newCommandIssued()");
-                return false;
-            }
-
+            if (!newCommandIssued()) return false;
             CancellationTokenSource ct = new();
 
-            bool commandAccepted = await MoveRelative(position, velocity);
-
-            Console.WriteLine($"[MoveRel] MoveRelative returned {commandAccepted}, Done={Done}, Time={timer.ElapsedMilliseconds}ms");
-
-            if (commandAccepted)
+            if (await MoveRelative(position, velocity))
             {
                 await Task.Delay(40);
-
-                Console.WriteLine($"[MoveRel] After 40ms delay: Done={Done}");
-
                 Task<bool> doneTask = WaitForDone(ct.Token);
                 Task<bool> errorTask = CheckForError(ct.Token);
                 Task<bool> cancellationTask = CancelTestTask(newCommandIssuedCT.Token);
                 Task<bool> limitTask;
                 List<Task> waitingTask;
 
-                // Check direction of travel for monitoring limits
+                //Check direction of travel for monitoring limits
                 if (position > 0)
                 {
-                    Console.WriteLine("[MoveRel] Monitoring forward limit");
                     limitTask = CheckFwLimitTask(true, ct.Token);
                 }
                 else
                 {
-                    Console.WriteLine("[MoveRel] Monitoring backward limit");
                     limitTask = CheckBwLimitTask(true, ct.Token);
                 }
 
-                // Check if we need a timeout task
+                //Check if we need a timeout task
                 if (timeout > 0)
                 {
                     Task timeoutTask = Task.Delay(TimeSpan.FromSeconds(timeout), ct.Token);
@@ -468,21 +450,8 @@ namespace TwinCat_Motion_ADS
                     waitingTask = new List<Task> { doneTask, errorTask, limitTask, cancellationTask };
                 }
 
-                // Wait for first completed task
+                //Wait for the first task to complete
                 Task completedTask = await Task.WhenAny(waitingTask);
-
-                string completedName =
-                    completedTask == doneTask ? "Done" :
-                    completedTask == errorTask ? "Error" :
-                    completedTask == limitTask ? "Limit" :
-                    completedTask == cancellationTask ? "Cancellation" : "Timeout";
-
-                Console.WriteLine($"[MoveRel] First task: {completedName}, Done={Done}, Time={timer.ElapsedMilliseconds}ms, Status={completedTask.Status}");
-
-                if (completedTask.IsFaulted)
-                {
-                    Console.WriteLine($"[MoveRel] Task exception: {completedTask.Exception}");
-                }
 
                 if (completedTask == doneTask)
                 {
@@ -523,7 +492,7 @@ namespace TwinCat_Motion_ADS
                 }
             }
 
-            Console.WriteLine("[MoveRel] MoveRelative() rejected command");
+            Console.WriteLine("Axis busy - command rejected");
             return false;
         }
 

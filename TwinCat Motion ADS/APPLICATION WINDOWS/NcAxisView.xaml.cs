@@ -93,7 +93,6 @@ namespace TwinCat_Motion_ADS
             XamlUI.CheckBoxBinding((string)errorCheck.Content, errorCheck, testAxis, "Error", BindingMode.OneWay);
             XamlUI.CheckBoxBinding((string)validAxis.Content, validAxis, testAxis, "Valid", BindingMode.OneWay);
             XamlUI.TextBlockBinding(currentAxisReadback.SettingValue, testAxis, "AxisID", "D");
-            XamlUI.CheckBoxBinding((string)testCancelledCheck.Content, testCancelledCheck, testAxis, "CancelTest", BindingMode.OneWay);
             XamlUI.CheckBoxBinding((string)testPausedCheck.Content, testPausedCheck, testAxis, "PauseTest", BindingMode.OneWay);
 
 
@@ -292,6 +291,8 @@ namespace TwinCat_Motion_ADS
             homeButton.IsEnabled = Enabled;
             folderDirSelect.IsEnabled = Enabled;
             testButton.IsEnabled = Enabled;
+            pauseTest.IsEnabled = !Enabled;
+            cancelTest.IsEnabled = !Enabled;
         }
 
         private async void RunSelectedTestButton_Click(object sender, RoutedEventArgs e)
