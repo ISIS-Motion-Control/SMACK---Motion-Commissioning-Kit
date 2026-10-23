@@ -64,7 +64,9 @@ namespace TwinCat_Motion_ADS
             Button checkChannelsButton = new();
             //Setup buttons
             XamlUI.SetupButton(ref updateChannelButton, "Update Channel");
+            updateChannelButton.Width = 150;
             XamlUI.SetupButton(ref checkChannelsButton, "Check Channels");
+            checkChannelsButton.Width = 150;
             //Setup event handlers
             updateChannelButton.Click += new RoutedEventHandler(UpdateChannels);
             checkChannelsButton.Click += new RoutedEventHandler(CheckChannels);
@@ -75,7 +77,7 @@ namespace TwinCat_Motion_ADS
             //Create connection status stack panel
             StackPanel statusStackPanel = new();
             statusStackPanel.Orientation = Orientation.Horizontal;
-            statusStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
+            statusStackPanel.HorizontalAlignment = HorizontalAlignment.Center;
             //Connection status feedback checkbox
             CheckBox connected = new();
             connected.IsEnabled = false;
@@ -101,8 +103,8 @@ namespace TwinCat_Motion_ADS
                 case DeviceTypes.KeyenceTM3000:
                     CommonRs232Window();
                     //Create stack panels to show the channel settings
-                    StackPanel allChannels = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(5, 5, 0, 0) };
-                    StackPanel col1Channels = new() { Orientation = Orientation.Vertical };
+                    StackPanel allChannels = new() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
+                    StackPanel col1Channels = new() { Orientation = Orientation.Vertical, Margin = new Thickness(0, 0, 10, 0)};
                     StackPanel col2Channels = new() { Orientation = Orientation.Vertical, Margin = new Thickness(10, 0, 0, 0) };
 
                     //Add stack panels to screen
@@ -133,9 +135,9 @@ namespace TwinCat_Motion_ADS
                 case DeviceTypes.KeyenceTMX5000:
                     CommonRs232Window();
                     //Create stack panels to show the channel settings
-                    StackPanel allChannelsTMX = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 5, 0, 0) };
-                    StackPanel col1ChannelsTMX = new() { Orientation = Orientation.Vertical };
-                    StackPanel col2ChannelsTMX = new() { Orientation = Orientation.Vertical, Margin = new Thickness(15, 0, 0, 0) };
+                    StackPanel allChannelsTMX = new() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
+                    StackPanel col1ChannelsTMX = new() { Orientation = Orientation.Vertical, Margin = new Thickness(0, 0, 10, 0) };
+                    StackPanel col2ChannelsTMX = new() { Orientation = Orientation.Vertical, Margin = new Thickness(10, 0, 0, 0) };
 
                     //Add stack panels to screen
 
@@ -167,7 +169,7 @@ namespace TwinCat_Motion_ADS
 
                 case DeviceTypes.Beckhoff:
                     //Create stack panel for 1st setting
-                    StackPanel setting1 = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(5, 5, 0, 0) };
+                    StackPanel setting1 = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 0), HorizontalAlignment = HorizontalAlignment.Center };
                     deviceSettings.Children.Add(setting1);
 
                     //AMS NET ID SETTING
@@ -180,14 +182,15 @@ namespace TwinCat_Motion_ADS
                     setting1.Children.Add(netID);
 
                     //Create stack panel elements to hold channels
-                    StackPanel channels = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(5, 5, 0, 0) };
-                    StackPanel col1 = new() { Orientation = Orientation.Vertical };
-                    StackPanel col2 = new() { Orientation = Orientation.Vertical, Margin = new Thickness(5, 0, 0, 0) };
+                    StackPanel channels = new() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
+                    StackPanel col1 = new() { Orientation = Orientation.Vertical, Margin = new Thickness(0, 0, 10, 0) };
+                    StackPanel col2 = new() { Orientation = Orientation.Vertical, Margin = new Thickness(10, 0, 0, 0) };
 
                     //Create digital input channels
                     for (int i = 1; i <= ((MD_Beckhoff)MDevice).DIGITAL_INPUT_CHANNELS; i++)
                     {
                         CheckBox cb = new();
+                        cb.MinWidth = 0;
                         XamlUI.CheckBoxBinding("DInput Ch" + i, cb, ((MD_Beckhoff)MDevice), "DigitalInputConnected[" + (i - 1) + "]");
                         col1.Children.Add(cb);
                     }
@@ -195,6 +198,7 @@ namespace TwinCat_Motion_ADS
                     for (int i = 1; i <= ((MD_Beckhoff)MDevice).PT100_CHANNELS; i++)
                     {
                         CheckBox cb = new();
+                        cb.MinWidth = 0;
                         XamlUI.CheckBoxBinding("PT100 Ch" + i, cb, ((MD_Beckhoff)MDevice), "PT100Connected[" + (i - 1) + "]");
                         col2.Children.Add(cb);
                     }
@@ -208,6 +212,7 @@ namespace TwinCat_Motion_ADS
                     StackPanel setting_motionCh = new();
                     setting_motionCh.Orientation = Orientation.Horizontal;
                     setting_motionCh.Margin = new Thickness(5, 5, 0, 0);
+                    setting_motionCh.HorizontalAlignment = HorizontalAlignment.Center;
                     deviceSettings.Children.Add(setting_motionCh);
 
                     TextBlock settingText_motionCh = new();
@@ -221,7 +226,7 @@ namespace TwinCat_Motion_ADS
 
 
                     //VARIABLE STRING
-                    StackPanel setting2 = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(5, 5, 0, 0) };
+                    StackPanel setting2 = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(5, 5, 0, 0), HorizontalAlignment = HorizontalAlignment.Center };
                     deviceSettings.Children.Add(setting2);
 
                     TextBlock setting2Text = new();
@@ -261,16 +266,29 @@ namespace TwinCat_Motion_ADS
         {
 
 
-            //Create stack panel for 1st setting
-            StackPanel setting1 = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(5, 5, 0, 0) };
-            deviceSettings.Children.Add(setting1);
+            // Create grid for RS232 settings
+            Grid settingsGrid = new()
+            {
+                Margin = new Thickness(5, 5, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
 
-            //Com Port Setting
+            settingsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            settingsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            settingsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            settingsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            settingsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            deviceSettings.Children.Add(settingsGrid);
+
+
+            // Com Port Setting
             TextBlock setting1Text = new();
             ComboBox comPort = new();
             Button updatePortsButton = new();
 
-            ((BaseRs232MeasurementDevice)MDevice).UpdatePortList();   //Generate new serial port list
+            ((BaseRs232MeasurementDevice)MDevice).UpdatePortList();
 
             XamlUI.SetupTextBlock(ref setting1Text, "Com Port:");
             XamlUI.SetupComboBox(ref comPort, "comPort", ((BaseRs232MeasurementDevice)MDevice).SerialPortList);
@@ -280,18 +298,24 @@ namespace TwinCat_Motion_ADS
             comPort.DropDownClosed += new EventHandler(portSelect_DropDownClosed);
             updatePortsButton.Click += new RoutedEventHandler(refreshPorts_Click);
 
-            setting1.Children.Add(setting1Text);
-            setting1.Children.Add(comPort);
-            setting1.Children.Add(updatePortsButton);
+            Grid.SetRow(setting1Text, 0);
+            Grid.SetColumn(setting1Text, 0);
+
+            Grid.SetRow(comPort, 0);
+            Grid.SetColumn(comPort, 1);
+
+            Grid.SetRow(updatePortsButton, 0);
+            Grid.SetColumn(updatePortsButton, 2);
+
+            settingsGrid.Children.Add(setting1Text);
+            settingsGrid.Children.Add(comPort);
+            settingsGrid.Children.Add(updatePortsButton);
 
 
-            //Baud rate setting
-            StackPanel setting2 = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(5, 5, 0, 0) };
-            deviceSettings.Children.Add(setting2);
-
+            // Baud Rate Setting
             TextBlock setting2Text = new();
             ComboBox baudRate = new();
-            
+
             XamlUI.SetupTextBlock(ref setting2Text, "Baud Rate:");
             XamlUI.SetupComboBox(ref baudRate, "baudRate", ((BaseRs232MeasurementDevice)MDevice).BaudRateList);
             XamlUI.ComboBoxBinding(((BaseRs232MeasurementDevice)MDevice).BaudRateList, baudRate, ((BaseRs232MeasurementDevice)MDevice), "BaudRate");
@@ -299,9 +323,15 @@ namespace TwinCat_Motion_ADS
             baudRate.DropDownClosed += new EventHandler(baudSelect_DropDownClosed);
             baudRate.SelectedItem = ((BaseRs232MeasurementDevice)MDevice).BaudRate.ToString();
 
-            setting2.Children.Add(setting2Text);
-            setting2.Children.Add(baudRate);
-            
+            Grid.SetRow(setting2Text, 1);
+            Grid.SetColumn(setting2Text, 0);
+
+            Grid.SetRow(baudRate, 1);
+            Grid.SetColumn(baudRate, 1);
+
+            settingsGrid.Children.Add(setting2Text);
+            settingsGrid.Children.Add(baudRate);
+
         }
 
         public void UpdateChannels(object sender, EventArgs e)
@@ -456,6 +486,9 @@ namespace TwinCat_Motion_ADS
             XamlUI.TextboxBinding(tb, source, tbpp);
             XamlUI.SetupTextBox(ref tb, tbContent, 100);
             XamlUI.CheckBoxBinding(cbContent, cb, source, cbpp);
+            cb.MinWidth = 0;
+            tb.Margin = new Thickness(0, 10, 0, 0);
+            cb.Margin = new Thickness(5, 10, 0, 0);
 
             //Add elements to stackpanel
             sp.Children.Add(tb);
@@ -465,7 +498,7 @@ namespace TwinCat_Motion_ADS
     class KeyenceChannelTMX
     {
         public int channelID;
-        public StackPanel sp = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 5) };
+        public StackPanel sp = new() { Orientation = Orientation.Horizontal};
         private TextBox tb = new();
         private CheckBox cb = new();
         private TextBox tn = new();
@@ -493,7 +526,7 @@ namespace TwinCat_Motion_ADS
 
             if (string.IsNullOrEmpty(((MD_KeyenceTMX5000)source).ChToolNumber[channel - 1]))
             {
-                tnContent = "Tool";
+                tnContent = "Tool #";
             }
             else
             {
@@ -507,10 +540,11 @@ namespace TwinCat_Motion_ADS
             XamlUI.CheckBoxBinding(cbContent, cb, source, cbpp);
             XamlUI.TextboxBinding(tn, source, tnpp);
             XamlUI.SetupTextBox(ref tn, tnContent, 30);
-            tb.Margin = new Thickness(5, 0, 0, 0);
-            tn.Margin = new Thickness(5, 0, 5, 0);
 
-
+            cb.MinWidth = 0;
+            tb.Margin = new Thickness(0, 10, 0, 0);
+            tn.Margin = new Thickness(5, 10, 0, 0);
+            cb.Margin = new Thickness(5, 10, 0, 0);
 
             //Add elements to stackpanel
             sp.Children.Add(tb);
