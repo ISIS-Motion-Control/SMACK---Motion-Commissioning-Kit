@@ -45,6 +45,7 @@ namespace TwinCat_Motion_ADS
         private uint bEnableHandle;
         private uint bResetHandle;
         private bool _handlesCreated = false;
+        private bool hasRelativePositionHandle = false;
         #endregion
 
         //Current axis ID
@@ -74,7 +75,6 @@ namespace TwinCat_Motion_ADS
                 Plc.TcAds.DeleteVariableHandle(eCommandHandle);
                 Plc.TcAds.DeleteVariableHandle(fVelocityHandle);
                 Plc.TcAds.DeleteVariableHandle(fPositionHandle);
-                Plc.TcAds.DeleteVariableHandle(fRelativePositionHandle);
                 Plc.TcAds.DeleteVariableHandle(bExecuteHandle);
                 Plc.TcAds.DeleteVariableHandle(fActPositionHandle);
                 Plc.TcAds.DeleteVariableHandle(bDoneHandle);
@@ -86,6 +86,7 @@ namespace TwinCat_Motion_ADS
                 Plc.TcAds.DeleteVariableHandle(bErrorHandle);
                 Plc.TcAds.DeleteVariableHandle(bEnableHandle);
                 Plc.TcAds.DeleteVariableHandle(bResetHandle);
+                if (hasRelativePositionHandle) { Plc.TcAds.DeleteVariableHandle(fRelativePositionHandle); }
             }
             catch
             {
@@ -117,7 +118,6 @@ namespace TwinCat_Motion_ADS
                 eCommandHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stControl.eCommand");
                 fVelocityHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stControl.fVelocity");
                 fPositionHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stControl.fPosition");
-                fRelativePositionHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stControl.fRelativePosition");
                 bExecuteHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stControl.bExecute");
                 fActPositionHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stStatus.fActPosition");
                 bDoneHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stStatus.bDone");
@@ -133,7 +133,15 @@ namespace TwinCat_Motion_ADS
                 ReadStatuses();
                 _handlesCreated = true;
                 Valid = true;
-                
+                try
+                {
+                    fRelativePositionHandle = Plc.TcAds.CreateVariableHandle("GVL.astAxes[" + AxisID + "].stControl.fRelativePosition");
+                    hasRelativePositionHandle = true;
+                }
+                catch
+                {
+                    hasRelativePositionHandle = false;
+                }
             }
             catch
             {
@@ -185,7 +193,14 @@ namespace TwinCat_Motion_ADS
         private async Task SetRelativePosition(double position)
         {
             if (!ValidCommand()) return;
-            await Plc.TcAds.WriteAnyAsync(fRelativePositionHandle, position, CancellationToken.None);
+            if (hasRelativePositionHandle)
+            {
+                await Plc.TcAds.WriteAnyAsync(fRelativePositionHandle, position, CancellationToken.None);
+            }
+            else
+            {
+                await Plc.TcAds.WriteAnyAsync(fPositionHandle, position, CancellationToken.None);
+            }
         }
 
         private async Task Execute()
