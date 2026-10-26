@@ -4,129 +4,256 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
-             mc:Ignorable="d" d:DesignHeight="700" d:DesignWidth="1100">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <StackPanel x:Name="csvWindowGrid" MinWidth="660">
-            <Border Style="{StaticResource Card}" Margin="0,0,0,10">
-                <StackPanel>
-                    <DockPanel LastChildFill="True">
-                        <Button DockPanel.Dock="Right" Content="Update axes" Click="Button_UpdateGraph_Click" Style="{StaticResource SmackButton}"/>
-                        <TextBlock Text="Chart axes" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/>
-                    </DockPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                        <Expander Header="Y axis" IsExpanded="False" Width="315" Margin="0,0,10,0" Style="{StaticResource SmackExpander}">
-                            <StackPanel x:Name="YAxisControls" Margin="0,7,0,0">
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Title" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingY_Title" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Min" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingY_Scale_Min" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Max" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingY_Scale_Max" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Interval" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingY_Scale_Sep" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Decimals" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingY_Scale_Dec" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                            </StackPanel>
-                        </Expander>
-                        <Expander Header="X axis" IsExpanded="False" Width="315" Margin="0,0,10,0" Style="{StaticResource SmackExpander}">
-                            <StackPanel x:Name="XAxisControls" Margin="0,7,0,0">
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Title" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingX_Title" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Min" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingX_Scale_Min" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Max" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingX_Scale_Max" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Interval" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingX_Scale_Sep" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="Decimals" VerticalAlignment="Center" Style="{StaticResource MutedText}"/>
-                                    <TextBox x:Name="SettingX_Scale_Dec" Grid.Column="1" Style="{StaticResource SmackTextBox}"/>
-                                </Grid>
-                            </StackPanel>
-                        </Expander>
-                    </StackPanel>
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1100">
+
+    <UserControl.Resources>
+        <!-- Local size overrides: retain the standard SMACK control templates/colours. -->
+        <Style x:Key="CsvSmallButton" TargetType="Button" BasedOn="{StaticResource SmackButton}">
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="Padding" Value="9,4"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,6,6"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="CsvPrimaryButton" TargetType="Button" BasedOn="{StaticResource SmackPrimaryButton}">
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Padding" Value="12,5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="CsvAxisTextBox" TargetType="TextBox" BasedOn="{StaticResource SmackTextBox}">
+            <Setter Property="MinHeight" Value="29"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+        </Style>
+        <Style x:Key="CsvAxisLabel" TargetType="TextBlock" BasedOn="{StaticResource MutedText}">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="CsvColumnsList" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+            <Setter Property="Background" Value="{StaticResource Smack.Surface}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Smack.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+        <Style x:Key="CsvPreviewToggle" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+            <Setter Property="Content" Value="Show data table"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="{StaticResource Smack.Surface}"/>
+            <Setter Property="Foreground" Value="{StaticResource Smack.Text}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Smack.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Content" Value="Hide data table"/>
+                    <Setter Property="Background" Value="{StaticResource Smack.AccentSoft}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource Smack.FocusNeutral}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="CsvBoolToVisibility"/>
+    </UserControl.Resources>
+
+    <!-- Graph-first layout: narrow tools sidebar, chart fills the remaining space. -->
+    <Grid x:Name="csvWindowGrid" MinWidth="730" MinHeight="350">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- File and plotting actions, always available. -->
+        <Border Grid.Row="0" Style="{StaticResource Card}" Padding="12,9" Margin="0,0,0,10">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Button Content="Import CSV" Click="LoadCSVFile_Click" Style="{StaticResource CsvPrimaryButton}"/>
+                    <Button Content="Export CSV" Click="Button_ExportCsv_Click" Style="{StaticResource CsvSmallButton}" Margin="0,0,6,0"/>
+                    <Button Content="Add to chart" Click="Button_AddToGraph_Click" Style="{StaticResource CsvSmallButton}" Margin="0"/>
                 </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="0,0,0,10">
-                <StackPanel>
-                    <TextBlock Text="CSV data" Style="{StaticResource SectionTitle}" Margin="0,0,0,8"/>
-                    <WrapPanel Margin="0,0,0,9">
-                        <Button Content="Add to chart" Click="Button_AddToGraph_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Import CSV" Click="LoadCSVFile_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Export CSV" Click="Button_ExportCsv_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Add error" Click="Button_AddError_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Calculated column" Click="Button_AddDataCol_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Delete column" Click="Button_DeleteSelected_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                    </WrapPanel>
+                <ToggleButton x:Name="ShowDataPreview" DockPanel.Dock="Right"
+                              Style="{StaticResource CsvPreviewToggle}"/>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="306"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*" MinWidth="350"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar can scroll independently; chart does not move off screen. -->
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="0,0,3,0">
+
+                    <!-- Selected file and calculated results. -->
+                    <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="Dataset" Style="{StaticResource SectionTitle}" Margin="0,0,0,8"/>
+                            <TextBlock Text="Filename" Style="{StaticResource GroupTitle}"/>
+                            <TextBlock x:Name="dataFileVal" Text="No CSV loaded" FontSize="12"
+                                       Foreground="{StaticResource Smack.Text}"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,0,9"/>
+                            <StackPanel x:Name="performanceStackPanel">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Accuracy" Style="{StaticResource MutedText}"/>
+                                    <TextBlock x:Name="AccuracyVal" Grid.Column="1" Text="0.0"
+                                               FontSize="12" FontWeight="SemiBold"/>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Repeatability" Style="{StaticResource MutedText}"/>
+                                    <TextBlock x:Name="RepeatabilityVal" Grid.Column="1" Text="0.0"
+                                               FontSize="12" FontWeight="SemiBold"/>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- X and Y axes use one shared label column to avoid wasted width. -->
+                    <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="Chart axes" Style="{StaticResource SectionTitle}" Margin="0,0,0,9"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="62"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="Y axis"
+                                           Style="{StaticResource GroupTitle}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="X axis"
+                                           Style="{StaticResource GroupTitle}"/>
+
+                                <TextBlock Grid.Row="1" Text="Title" Style="{StaticResource CsvAxisLabel}"/>
+                                <TextBox x:Name="SettingY_Title" Grid.Row="1" Grid.Column="1" Style="{StaticResource CsvAxisTextBox}"/>
+                                <TextBox x:Name="SettingX_Title" Grid.Row="1" Grid.Column="2" Style="{StaticResource CsvAxisTextBox}"/>
+
+                                <TextBlock Grid.Row="2" Text="Min" Style="{StaticResource CsvAxisLabel}"/>
+                                <TextBox x:Name="SettingY_Scale_Min" Grid.Row="2" Grid.Column="1" Style="{StaticResource CsvAxisTextBox}" Margin="0,4,5,0"/>
+                                <TextBox x:Name="SettingX_Scale_Min" Grid.Row="2" Grid.Column="2" Style="{StaticResource CsvAxisTextBox}" Margin="0,4,5,0"/>
+
+                                <TextBlock Grid.Row="3" Text="Max" Style="{StaticResource CsvAxisLabel}"/>
+                                <TextBox x:Name="SettingY_Scale_Max" Grid.Row="3" Grid.Column="1" Style="{StaticResource CsvAxisTextBox}" Margin="0,4,5,0"/>
+                                <TextBox x:Name="SettingX_Scale_Max" Grid.Row="3" Grid.Column="2" Style="{StaticResource CsvAxisTextBox}" Margin="0,4,5,0"/>
+
+                                <TextBlock Grid.Row="4" Text="Interval" Style="{StaticResource CsvAxisLabel}"/>
+                                <TextBox x:Name="SettingY_Scale_Sep" Grid.Row="4" Grid.Column="1" Style="{StaticResource CsvAxisTextBox}" Margin="0,4,5,0"/>
+                                <TextBox x:Name="SettingX_Scale_Sep" Grid.Row="4" Grid.Column="2" Style="{StaticResource CsvAxisTextBox}" Margin="0,4,5,0"/>
+
+                                <TextBlock Grid.Row="5" Text="Decimals" Style="{StaticResource CsvAxisLabel}"/>
+                                <TextBox x:Name="SettingY_Scale_Dec" Grid.Row="5" Grid.Column="1" Style="{StaticResource CsvAxisTextBox}" Margin="0,4,5,0"/>
+                                <TextBox x:Name="SettingX_Scale_Dec" Grid.Row="5" Grid.Column="2" Style="{StaticResource CsvAxisTextBox}" Margin="0,4,5,0"/>
+                            </Grid>
+                            <Button Content="Update axes" Click="Button_UpdateGraph_Click"
+                                    Style="{StaticResource CsvSmallButton}" Margin="0,9,0,0"
+                                    HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Existing header list is retained: code-behind selects a column here. -->
+                    <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="CSV columns" Style="{StaticResource SectionTitle}" Margin="0,0,0,8"/>
+                            <ListBox x:Name="csvHeaderList" Style="{StaticResource CsvColumnsList}" Height="113"/>
+                            <WrapPanel Margin="0,8,0,0">
+                                <Button Content="Add error" Click="Button_AddError_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Calculated column" Click="Button_AddDataCol_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Delete column" Click="Button_DeleteSelected_Click" Style="{StaticResource CsvSmallButton}"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Less frequent graph functions live here instead of above the plot. -->
+                    <Border Style="{StaticResource Card}" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Graph tools" Style="{StaticResource SectionTitle}" Margin="0,0,0,8"/>
+                            <WrapPanel>
+                                <Button Content="Calculate accuracy" Click="Button_CalcAcc_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Show/hide results" Click="Button_TogglePerformanceVisibility_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Add line" Click="Button_AddStraightLine_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Performance bands" Click="Button_AddPerformanceLines_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Series settings" Click="Button_LineSettings_Click" Style="{StaticResource CsvSmallButton}"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Chart uses all remaining width and height. -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" MinHeight="230"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Style="{StaticResource Card}" Padding="12">
                     <Grid>
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="185"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                        <ListBox x:Name="csvHeaderList" Height="165" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,0,8,0"/>
-                        <DataGrid x:Name="csvDataGrid" Grid.Column="1" Height="165" AutoGenerateColumns="True" IsReadOnly="False"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <DockPanel Grid.Row="0" LastChildFill="True" Margin="0,0,0,8">
+                            <WrapPanel DockPanel.Dock="Right">
+                                <Button Content="Fit X" Click="Button_AutoFitX_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Fit Y" Click="Button_AutoFitY_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Export image" Click="Button_ExportGraph_Click" Style="{StaticResource CsvSmallButton}"/>
+                                <Button Content="Clear" Click="Button_ClearGraph_Click" Style="{StaticResource CsvSmallButton}" Margin="0,0,0,6"/>
+                            </WrapPanel>
+                            <TextBlock Text="Graph" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/>
+                        </DockPanel>
+                        <Grid x:Name="ChartArea" Grid.Row="1"
+                              Background="{StaticResource Smack.Surface}" MinHeight="185">
+                            <lvc:CartesianChart x:Name="TestChart"
+                                                Series="{Binding SeriesCollection}"
+                                                Sections="{Binding Sections}"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"/>
+                        </Grid>
                     </Grid>
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}">
-                <StackPanel>
-                    <TextBlock Text="Graph" Style="{StaticResource SectionTitle}" Margin="0,0,0,9"/>
-                    <WrapPanel Margin="0,0,0,8">
-                        <Button Content="Export image" Click="Button_ExportGraph_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Clear" Click="Button_ClearGraph_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Show/hide results" Click="Button_TogglePerformanceVisibility_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Calculate accuracy" Click="Button_CalcAcc_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Add line" Click="Button_AddStraightLine_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Performance bands" Click="Button_AddPerformanceLines_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Series settings" Click="Button_LineSettings_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Fit X" Click="Button_AutoFitX_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                        <Button Content="Fit Y" Click="Button_AutoFitY_Click" Style="{StaticResource SmackButton}" Margin="0,0,6,5"/>
-                    </WrapPanel>
-                    <Grid x:Name="ChartArea" MinHeight="380" Background="{StaticResource Smack.Surface}">
-                        <lvc:CartesianChart x:Name="TestChart" Series="{Binding SeriesCollection}" Sections="{Binding Sections}"
-                                            MinHeight="380" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                        <StackPanel x:Name="dataFileName" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,6,10,0" Background="{StaticResource Smack.Surface}">
-                            <TextBlock Text="Filename: " FontSize="11" Foreground="{StaticResource Smack.TextMuted}"/>
-                            <TextBlock x:Name="dataFileVal" Text="" FontSize="11" MaxWidth="250" TextTrimming="CharacterEllipsis"/>
-                        </StackPanel>
-                        <StackPanel x:Name="performanceStackPanel" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,30,10,0" Background="{StaticResource Smack.Surface}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Accuracy: " FontSize="11"/>
-                                <TextBlock x:Name="AccuracyVal" Text="0.0" FontSize="11"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Repeatability: " FontSize="11"/>
-                                <TextBlock x:Name="RepeatabilityVal" Text="0.0" FontSize="11"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
-            </Border>
-        </StackPanel>
-    </ScrollViewer>
+                </Border>
+
+                <!-- Full-width CSV preview is hidden by default and does not shrink the graph. -->
+                <Border Grid.Row="1" Style="{StaticResource Card}" Padding="12"
+                        Margin="0,10,0,0"
+                        Visibility="{Binding IsChecked, ElementName=ShowDataPreview, Converter={StaticResource CsvBoolToVisibility}}">
+                    <StackPanel>
+                        <TextBlock Text="CSV data table" Style="{StaticResource SectionTitle}" Margin="0,0,0,8"/>
+                        <DataGrid x:Name="csvDataGrid" Height="170"
+                                  AutoGenerateColumns="True"
+                                  IsReadOnly="TRUE"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderBrush="{StaticResource Smack.Border}"
+                                  BorderThickness="1"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
 </UserControl>

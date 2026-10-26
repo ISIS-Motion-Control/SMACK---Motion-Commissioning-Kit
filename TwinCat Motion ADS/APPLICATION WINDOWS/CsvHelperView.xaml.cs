@@ -112,12 +112,12 @@ namespace TwinCat_Motion_ADS
             XAxisDec.UiVal = Properties.Settings.Default.xAxisDec;
 
             //Bind UI textboxes to axis properties
-            XamlUI.TextboxBinding(SettingY_Scale_Max, YAxisMax, "UiVal", UpdateSourceTrigger.LostFocus);
-            XamlUI.TextboxBinding(SettingY_Scale_Min, YAxisMin, "UiVal", UpdateSourceTrigger.LostFocus);
+            BindAxisLimit(SettingY_Scale_Max, YAxisMax);
+            BindAxisLimit(SettingY_Scale_Min, YAxisMin);
             XamlUI.TextboxBinding(SettingY_Scale_Sep, YAxisSep, "UiVal", UpdateSourceTrigger.LostFocus);
             XamlUI.TextboxBinding(SettingY_Title, YAxisTitle, "UiVal");
-            XamlUI.TextboxBinding(SettingX_Scale_Max, XAxisMax, "UiVal", UpdateSourceTrigger.LostFocus);
-            XamlUI.TextboxBinding(SettingX_Scale_Min, XAxisMin, "UiVal",UpdateSourceTrigger.LostFocus);
+            BindAxisLimit(SettingX_Scale_Max, XAxisMax);
+            BindAxisLimit(SettingX_Scale_Min, XAxisMin);
             XamlUI.TextboxBinding(SettingX_Scale_Sep, XAxisSep, "UiVal", UpdateSourceTrigger.LostFocus);
             XamlUI.TextboxBinding(SettingX_Title, XAxisTitle, "UiVal");
             XamlUI.TextboxBinding(SettingY_Scale_Dec, YAxisDec, "UiVal", UpdateSourceTrigger.LostFocus);
@@ -345,7 +345,18 @@ namespace TwinCat_Motion_ADS
         #endregion
 
 
+        private static void BindAxisLimit(TextBox textBox, SettingDouble setting)
+        {
+            var binding = new Binding(nameof(SettingDouble.Val))
+            {
+                Source = setting,
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                StringFormat = "{0:G8}"
+            };
 
+            BindingOperations.SetBinding(textBox, TextBox.TextProperty, binding);
+        }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -917,86 +928,107 @@ namespace TwinCat_Motion_ADS
 
         private void Button_AutoFitX_Click(object sender, RoutedEventArgs e)
         {
-            double paddingVal = 0.05;
-            double maxVal = 0;
-            double minVal = 0;
-            if (csvHeaderList.SelectedItem == null)
-            {
-                Console.WriteLine("No item selected");
-                return;
-            }
-            string columnName = csvHeaderList.SelectedItem.ToString();
-
-
-            //Don't want zero as the limit
-            if (double.TryParse((string)dt.Rows[1][columnName], out _))
-            {
-                maxVal = double.Parse((string)dt.Rows[1][columnName]);
-                minVal = double.Parse((string)dt.Rows[1][columnName]);
-            }
-
-
-            foreach (DataRow row in dt.Rows)
-            {
-                if (double.TryParse((string)row[columnName], out _))
-                {
-                    if (double.Parse((string)row[columnName]) > maxVal) maxVal = double.Parse((string)row[columnName]);
-                    if (double.Parse((string)row[columnName]) < minVal) minVal = double.Parse((string)row[columnName]);
-                }
-
-            }
-
-            Console.WriteLine("X max = " + maxVal);
-            Console.WriteLine("X min = " + minVal);
-            
-            double minMaxDiff = maxVal- minVal;
-            minVal = minVal - (minMaxDiff * paddingVal);
-            maxVal = maxVal + (minMaxDiff * paddingVal);
-
-            XAxisMax.Val = maxVal;
-            XAxisMin.Val = minVal;
+            AutoFitAxis(true);
         }
 
         private void Button_AutoFitY_Click(object sender, RoutedEventArgs e)
         {
-            double paddingVal = 0.05;
-            double maxVal = 0;
-            double minVal = 0;
-            if (csvHeaderList.SelectedItem == null)
+            AutoFitAxis(false);
+        }
+
+        private void AutoFitAxis(bool fitX)
+        {
+            double min = double.MaxValue;
+            double max = double.MinValue;
+            bool foundData = false;
+
+            // Check all visible plotted series
+            foreach (var series in SeriesCollection.OfType<ScatterSeries<ObservablePoint>>())
             {
-                Console.WriteLine("No item selected");
-                return;
-            }
-            string columnName = csvHeaderList.SelectedItem.ToString();
-
-
-            //Don't want zero as the limit
-            if (double.TryParse((string)dt.Rows[1][columnName], out _))
-            {
-                maxVal = double.Parse((string)dt.Rows[1][columnName]);
-                minVal = double.Parse((string)dt.Rows[1][columnName]);
-            }
-
-
-            foreach (DataRow row in dt.Rows)
-            {
-                if (double.TryParse((string)row[columnName], out _))
+                if (!series.IsVisible || series.Values == null)
                 {
-                    if (double.Parse((string)row[columnName]) > maxVal) maxVal = double.Parse((string)row[columnName]);
-                    if (double.Parse((string)row[columnName]) < minVal) minVal = double.Parse((string)row[columnName]);
+                    continue;
                 }
 
+                foreach (var point in series.Values)
+                {
+                    if (point == null)
+                    {
+                        continue;
+                    }
+
+                    // Select the appropriate coordinate
+                    double? value;
+
+                    if (fitX)
+                    {
+                        value = point.X;
+                    }
+                    else
+                    {
+                        value = point.Y;
+                    }
+
+                    // Check that the value is valid
+                    if (!value.HasValue)
+                    {
+                        continue;
+                    }
+
+                    if (double.IsNaN(value.Value) || double.IsInfinity(value.Value))
+                    {
+                        continue;
+                    }
+
+                    // Update minimum and maximum values
+                    if (value.Value < min)
+                    {
+                        min = value.Value;
+                    }
+
+                    if (value.Value > max)
+                    {
+                        max = value.Value;
+                    }
+
+                    foundData = true;
+                }
             }
 
-            Console.WriteLine("Y max = " + maxVal);
-            Console.WriteLine("Y min = " + minVal);
+            if (!foundData)
+            {
+                Console.WriteLine("No plotted data to fit.");
+                return;
+            }
 
-            double minMaxDiff = maxVal - minVal;
-            minVal = minVal - (minMaxDiff * paddingVal);
-            maxVal = maxVal + (minMaxDiff * paddingVal);
+            // Calculate padding
+            double range = max - min;
+            double padding;
 
-            YAxisMax.Val = maxVal;
-            YAxisMin.Val = minVal;
+            if (range > 0)
+            {
+                padding = range * 0.05;
+            }
+            else
+            {
+                padding = Math.Max(Math.Abs(min) * 0.05, 0.01);
+            }
+
+            min = min - padding;
+            max = max + padding;
+
+            // Update the appropriate axis
+            if (fitX)
+            {
+                XAxisMin.Val = min;
+                XAxisMax.Val = max;
+            }
+            else
+            {
+                YAxisMin.Val = min;
+                YAxisMax.Val = max;
+            }
+            UpdateGraphAxes();
         }
     }
     public class NewDataArgs : EventArgs
