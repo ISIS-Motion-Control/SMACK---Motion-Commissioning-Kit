@@ -22,6 +22,10 @@ namespace TwinCat_Motion_ADS
         public measurementDeviceWindow(int deviceIndex, I_MeasurementDevice mDevice)
         {
             InitializeComponent();
+
+            this.Width = 750;
+            this.Height = 750;
+
             DeviceIndex = deviceIndex;
             MDevice = mDevice;
             ConstructDeviceSettingsScreen();
@@ -539,7 +543,7 @@ namespace TwinCat_Motion_ADS
             XamlUI.SetupTextBox(ref tb, tbContent, 100);
             XamlUI.CheckBoxBinding(cbContent, cb, source, cbpp);
             XamlUI.TextboxBinding(tn, source, tnpp);
-            XamlUI.SetupTextBox(ref tn, tnContent, 30);
+            XamlUI.SetupTextBox(ref tn, tnContent, 100);
 
             cb.MinWidth = 0;
             tb.Margin = new Thickness(0, 10, 0, 0);

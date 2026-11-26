@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="Theme/Styles.xaml"/>
                 <!-- legacy styles, still used by pages not yet migrated -->
             </ResourceDictionary.MergedDictionaries>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
